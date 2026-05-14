@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(distPath));
   
   // Handle SPA routing: forward all non-API requests to index.html
-  app.get('/*', (req, res, next) => {
+  app.get('/:path*', (req, res, next) => {
     if (req.path.startsWith('/api')) return next();
     res.sendFile(path.join(distPath, 'index.html'));
   });
