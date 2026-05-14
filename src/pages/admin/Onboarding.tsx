@@ -4,7 +4,6 @@ import { Store, Rocket, ArrowRight, MessageSquare, Globe } from 'lucide-react';
 import { adminApi } from '../../lib/api';
 
 export function Onboarding() {
-  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     businessName: '',
     slug: '',

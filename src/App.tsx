@@ -5,7 +5,6 @@ import { Store } from './pages/Store';
 import { StoreDirectory } from './pages/StoreDirectory';
 import { AdminLayout } from './components/admin/AdminLayout';
 import { Dashboard } from './pages/admin/Dashboard';
-import { Login } from './pages/admin/Login';
 import { CategoryManager } from './pages/admin/CategoryManager';
 import { ProductManager } from './pages/admin/ProductManager';
 import { BusinessSettings } from './pages/admin/BusinessSettings';
