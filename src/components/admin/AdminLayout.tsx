@@ -30,20 +30,34 @@ export function AdminLayout() {
     const [checkingStore, setCheckingStore] = useState(true);
 
     useEffect(() => {
-        if (user && location.pathname !== '/admin/onboarding') {
-            adminApi.getMyStores().then(stores => {
-                if (stores.length === 0) {
+        const checkStoreStatus = async () => {
+            if (!user) {
+                setCheckingStore(false);
+                return;
+            }
+
+            // Skip check if already on onboarding page
+            if (location.pathname === '/admin/onboarding') {
+                setCheckingStore(false);
+                return;
+            }
+
+            try {
+                const stores = await adminApi.getMyStores();
+                if (!stores || stores.length === 0) {
+                    console.log('No stores found, redirecting to onboarding...');
                     navigate('/admin/onboarding', { replace: true });
                 }
-            }).catch(() => {
-                // Ignore errors here
-            }).finally(() => {
+            } catch (error: any) {
+                console.error('Error checking store status:', error);
+                // If it's a 401, let the Auth check handle it later
+            } finally {
                 setCheckingStore(false);
-            });
-        } else {
-            setCheckingStore(false);
-        }
-    }, [user, location.pathname]);
+            }
+        };
+
+        checkStoreStatus();
+    }, [user, location.pathname, navigate]);
 
     if (loading || checkingStore) {
         return (
