@@ -21,8 +21,8 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
     
-    // Allow any ngrok origin or listed origins
-    if (allowedOrigins.includes(origin) || origin.endsWith('.ngrok-free.app')) {
+    // Allow any ngrok or render origin or listed origins
+    if (allowedOrigins.includes(origin) || origin.endsWith('.ngrok-free.app') || origin.endsWith('.onrender.com')) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
