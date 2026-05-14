@@ -38,16 +38,17 @@ app.use('/api/auth', createProxyMiddleware({
   target: env.neonAuthUrl,
   changeOrigin: true,
   pathRewrite: {
-    '^/api/auth': '', // remove /api/auth from the path
+    '^/api/auth': '',
   },
-  onProxyRes: (proxyRes) => {
-    // Ensure cookies are correctly scoped to our domain
-    const sc = proxyRes.headers['set-cookie'];
-    if (sc) {
-      proxyRes.headers['set-cookie'] = sc.map(c => 
-        c.replace(/Domain=[^;]+;?/, '').replace(/Secure;?/, '')
-      );
-    }
+  on: {
+    proxyRes: (proxyRes) => {
+      const sc = proxyRes.headers['set-cookie'];
+      if (sc) {
+        proxyRes.headers['set-cookie'] = (Array.isArray(sc) ? sc : [sc]).map((c: string) => 
+          c.replace(/Domain=[^;]+;?/, '').replace(/Secure;?/, '')
+        );
+      }
+    },
   },
 }));
 
