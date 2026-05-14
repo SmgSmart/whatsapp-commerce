@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'node:path';
 import cors from 'cors';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { createUploadSignature } from './cloudinary';
 import { login, getSession, requireUser, type AuthedRequest } from './auth';
 import { env } from './env';
@@ -31,6 +32,24 @@ app.use(cors({
   credentials: true 
 }));
 app.use(express.json({ limit: '1mb' }));
+
+// Auth Proxy: Forward frontend auth requests to Neon Auth
+app.use('/api/auth', createProxyMiddleware({
+  target: env.neonAuthUrl,
+  changeOrigin: true,
+  pathRewrite: {
+    '^/api/auth': '', // remove /api/auth from the path
+  },
+  onProxyRes: (proxyRes) => {
+    // Ensure cookies are correctly scoped to our domain
+    const sc = proxyRes.headers['set-cookie'];
+    if (sc) {
+      proxyRes.headers['set-cookie'] = sc.map(c => 
+        c.replace(/Domain=[^;]+;?/, '').replace(/Secure;?/, '')
+      );
+    }
+  },
+}));
 
 // Production: Serve static frontend files
 if (process.env.NODE_ENV === 'production') {
