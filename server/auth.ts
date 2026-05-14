@@ -26,9 +26,17 @@ export async function requireUser(req: AuthedRequest, res: Response, next: NextF
       console.log('Cookies found:', req.headers.cookie.split(';').map(c => c.split('=')[0].trim()));
     }
 
+    // Get token from header or cookie
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.startsWith('Bearer ') 
+      ? authHeader.substring(7) 
+      : undefined;
+
     const { data: session } = await auth.getSession({
       fetchOptions: {
-        headers: req.headers, 
+        headers: token ? {
+          'Authorization': `Bearer ${token}`
+        } : req.headers,
       },
     });
 
@@ -60,9 +68,16 @@ export async function requireUser(req: AuthedRequest, res: Response, next: NextF
 export async function getSession(req: Request, res: Response) {
   // 1. Check for real Neon Auth session
   try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.startsWith('Bearer ') 
+      ? authHeader.substring(7) 
+      : undefined;
+
     const { data: session } = await auth.getSession({
       fetchOptions: {
-        headers: req.headers,
+        headers: token ? {
+          'Authorization': `Bearer ${token}`
+        } : req.headers,
       },
     });
 

@@ -13,6 +13,16 @@ async function apiRequest<T>(path: string, options: RequestOptions = {}): Promis
     headers.set('Content-Type', 'application/json');
   }
 
+  // Get the session token from cookies
+  const sessionToken = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('better-auth.session_token='))
+    ?.split('=')[1];
+
+  if (sessionToken) {
+    headers.set('Authorization', `Bearer ${sessionToken}`);
+  }
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     credentials: 'include',
