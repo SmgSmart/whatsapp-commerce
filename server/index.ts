@@ -68,14 +68,12 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 async function getPublicStore(slug?: string) {
-  const rows = slug
-    ? await query<any>(
-        `SELECT * FROM stores WHERE slug = $1 AND active = true LIMIT 1`,
-        [slug]
-      )
-    : await query<any>(
-        `SELECT * FROM stores WHERE active = true ORDER BY created_at ASC LIMIT 1`
-      );
+  if (!slug) return null;
+  
+  const rows = await query<any>(
+    `SELECT * FROM stores WHERE slug = $1 AND active = true LIMIT 1`,
+    [slug]
+  );
 
   return rows[0] || null;
 }
