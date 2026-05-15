@@ -40,16 +40,8 @@ app.use('/api/auth', createProxyMiddleware({
   pathRewrite: {
     '^/api/auth': '',
   },
-  on: {
-    proxyRes: (proxyRes) => {
-      const sc = proxyRes.headers['set-cookie'];
-      if (sc) {
-        proxyRes.headers['set-cookie'] = (Array.isArray(sc) ? sc : [sc]).map((c: string) => 
-          c.replace(/Domain=[^;]+;?/, '').replace(/Secure;?/, '')
-        );
-      }
-    },
-  },
+  cookieDomainRewrite: "", // This strips the domain so cookies work on localhost/render
+  secure: true,
 }));
 
 // Production: Serve static frontend files
