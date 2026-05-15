@@ -36,7 +36,7 @@ export async function requireUser(req: AuthedRequest, res: Response, next: NextF
       fetchOptions: {
         headers: token ? {
           'Authorization': `Bearer ${token}`
-        } : req.headers,
+        } : (req.headers as any),
       },
     });
 
@@ -78,7 +78,7 @@ export async function getSession(req: Request, res: Response) {
       fetchOptions: {
         headers: token ? {
           'Authorization': `Bearer ${token}`
-        } : req.headers,
+        } : (req.headers as any),
       },
     });
 
