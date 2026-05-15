@@ -13,11 +13,11 @@ async function apiRequest<T>(path: string, options: RequestOptions = {}): Promis
     headers.set('Content-Type', 'application/json');
   }
 
-  // Get the session token from cookies
-  const sessionToken = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('better-auth.session_token='))
-    ?.split('=')[1];
+  // Get the session token from cookies (handle both __Secure prefix and local)
+  const cookies = document.cookie.split('; ');
+  const sessionToken = cookies.find(row => row.trim().startsWith('__Secure-neon-auth.session_token='))?.split('=')[1]
+    || cookies.find(row => row.trim().startsWith('neon-auth.session_token='))?.split('=')[1]
+    || cookies.find(row => row.trim().startsWith('better-auth.session_token='))?.split('=')[1];
 
   if (sessionToken) {
     headers.set('Authorization', `Bearer ${sessionToken}`);
