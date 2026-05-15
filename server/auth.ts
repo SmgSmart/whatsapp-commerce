@@ -41,6 +41,7 @@ export async function requireUser(req: AuthedRequest, res: Response, next: NextF
     });
 
     if (session?.user) {
+      console.log(`[AUTH] Authenticated user: ${session.user.email} (ID: ${session.user.id})`);
       req.userId = session.user.id;
       next();
       return;
