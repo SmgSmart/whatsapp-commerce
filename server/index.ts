@@ -18,15 +18,22 @@ const allowedOrigins = [
 ].filter(Boolean);
 
 // 1. Auth Proxy MUST be first (before express.json)
-// This prevents timeouts by allowing the proxy to handle the raw request body
 app.use('/api/auth', createProxyMiddleware({
   target: env.neonAuthUrl,
   changeOrigin: true,
   pathRewrite: {
     '^/api/auth': '',
   },
-  cookieDomainRewrite: "", // This strips the domain so cookies work on localhost/render
+  cookieDomainRewrite: "", 
   secure: true,
+  on: {
+    proxyReq: (proxyReq, req) => {
+      // Better Auth is sensitive to Origin/Referer headers when proxied
+      if (req.headers.origin) {
+        proxyReq.setHeader('origin', env.neonAuthUrl.split('/neondb')[0]);
+      }
+    }
+  }
 }));
 
 // 2. Other middleware
