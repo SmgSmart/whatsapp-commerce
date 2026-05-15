@@ -17,6 +17,19 @@ const allowedOrigins = [
   env.clientOrigin
 ].filter(Boolean);
 
+// 1. Auth Proxy MUST be first (before express.json)
+// This prevents timeouts by allowing the proxy to handle the raw request body
+app.use('/api/auth', createProxyMiddleware({
+  target: env.neonAuthUrl,
+  changeOrigin: true,
+  pathRewrite: {
+    '^/api/auth': '',
+  },
+  cookieDomainRewrite: "", // This strips the domain so cookies work on localhost/render
+  secure: true,
+}));
+
+// 2. Other middleware
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl)
@@ -32,17 +45,6 @@ app.use(cors({
   credentials: true 
 }));
 app.use(express.json({ limit: '1mb' }));
-
-// Auth Proxy: Forward frontend auth requests to Neon Auth
-app.use('/api/auth', createProxyMiddleware({
-  target: env.neonAuthUrl,
-  changeOrigin: true,
-  pathRewrite: {
-    '^/api/auth': '',
-  },
-  cookieDomainRewrite: "", // This strips the domain so cookies work on localhost/render
-  secure: true,
-}));
 
 // Production: Serve static frontend files
 if (process.env.NODE_ENV === 'production') {
