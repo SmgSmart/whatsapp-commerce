@@ -22,15 +22,15 @@ app.use('/api/auth', createProxyMiddleware({
   target: env.neonAuthUrl,
   changeOrigin: true,
   pathRewrite: {
-    '^/api/auth': '',
+    '^/api/auth/?': '', // Added a ? to handle both /api/auth and /api/auth/
   },
   cookieDomainRewrite: "", 
   secure: true,
   on: {
     proxyReq: (proxyReq, req) => {
-      // Better Auth is sensitive to Origin/Referer headers when proxied
       if (req.headers.origin && env.neonAuthUrl) {
-        proxyReq.setHeader('origin', env.neonAuthUrl.split('/neondb')[0]);
+        // Correctly set the origin to the target domain
+        proxyReq.setHeader('origin', new URL(env.neonAuthUrl).origin);
       }
     }
   }
