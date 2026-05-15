@@ -29,7 +29,7 @@ app.use('/api/auth', createProxyMiddleware({
   on: {
     proxyReq: (proxyReq, req) => {
       // Better Auth is sensitive to Origin/Referer headers when proxied
-      if (req.headers.origin) {
+      if (req.headers.origin && env.neonAuthUrl) {
         proxyReq.setHeader('origin', env.neonAuthUrl.split('/neondb')[0]);
       }
     }
