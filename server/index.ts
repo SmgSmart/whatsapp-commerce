@@ -26,7 +26,7 @@ app.use('/api/auth', createProxyMiddleware({
   },
   cookieDomainRewrite: "", 
   secure: true,
-  logLevel: 'debug', // THIS WILL SHOW US THE REAL URLS IN RENDER LOGS
+  logger: console, // Use logger instead of logLevel for newer http-proxy-middleware
   on: {
     proxyReq: (proxyReq: any, req: any) => {
       if (req.headers.origin && env.neonAuthUrl) {
