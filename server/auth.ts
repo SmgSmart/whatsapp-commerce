@@ -54,10 +54,10 @@ export async function requireUser(req: AuthedRequest, res: Response, next: NextF
     console.error('Session verification error:', error);
   }
 
-  // 2. Fallback to Dev User only if provided (Migration only)
-  const devUserId = env.devAdminUserId;
-  if (devUserId) {
-    req.userId = devUserId;
+  // 2. Fallback to Dev User only in development
+  const isProd = process.env.NODE_ENV === 'production';
+  if (env.devAdminUserId && !isProd) {
+    req.userId = env.devAdminUserId;
     next();
     return;
   }
@@ -94,8 +94,9 @@ export async function getSession(req: Request, res: Response) {
     console.error('Session retrieval error:', error);
   }
 
-  // 2. Fallback to Dev User
-  if (env.devAdminUserId) {
+  // 2. Fallback to Dev User (LOCAL ONLY)
+  const isProd = process.env.NODE_ENV === 'production';
+  if (env.devAdminUserId && !isProd) {
     return res.json({
       user: {
         id: env.devAdminUserId,
