@@ -8,7 +8,6 @@ import { Dashboard } from './pages/admin/Dashboard';
 import { CategoryManager } from './pages/admin/CategoryManager';
 import { ProductManager } from './pages/admin/ProductManager';
 import { BusinessSettings } from './pages/admin/BusinessSettings';
-import { AuthView } from './components/auth/AuthView';
 import { AccountView } from './components/auth/AccountView';
 import { Onboarding } from './pages/admin/Onboarding';
 import { Login } from './pages/admin/Login';
