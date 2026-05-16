@@ -22,10 +22,16 @@ app.use('/api/auth', createProxyMiddleware({
   target: env.neonAuthUrl?.split('/neondb')[0],
   changeOrigin: true,
   pathRewrite: (path) => {
-    // Prepend /neondb/auth to the path that Express has already stripped
-    const newPath = '/neondb/auth' + (path.startsWith('/') ? path : '/' + path);
-    console.log(`[PROXY] ${path} -> ${newPath}`);
-    return newPath;
+    // Better Auth is picky about the trailing slash on the base path
+    // If path is empty or just '/', we must NOT add a trailing slash to the mount point
+    const cleanPath = path.replace(/\/$/, '');
+    const newPath = '/neondb/auth' + (cleanPath.startsWith('/') ? cleanPath : '/' + cleanPath);
+    
+    // Ensure the result doesn't have a double slash unless it's the root
+    const finalPath = newPath === '/neondb/auth/' ? '/neondb/auth' : newPath;
+    
+    console.log(`[PROXY] ${path} -> ${finalPath}`);
+    return finalPath;
   },
   cookieDomainRewrite: "",
   secure: true,

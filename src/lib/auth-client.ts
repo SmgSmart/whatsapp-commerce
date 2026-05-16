@@ -5,6 +5,6 @@ import { createAuthClient } from '@neondatabase/auth';
 const baseURL = (import.meta.env.PROD 
   ? (window.location.origin + '/api/auth')
   : (import.meta.env.VITE_NEON_AUTH_URL || (window.location.origin + '/api/auth')))
-  .replace(/\/?$/, '/'); // Ensure it ends with a trailing slash
+  .replace(/\/$/, ''); // Remove trailing slash for precision
 
 export const authClient = createAuthClient(baseURL);
