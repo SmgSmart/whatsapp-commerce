@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { authClient } from '../lib/auth-client';
 import { adminApi } from '../lib/api';
 
@@ -10,7 +10,7 @@ export function AuthCallback() {
 
   useEffect(() => {
     const handleCallback = async () => {
-      const verifier = searchParams.get('neon_auth_session_verifier');
+      // Session verifier is processed automatically by the Neon Auth SDK
 
       // Give the session a moment to establish (important for new users)
       await new Promise(resolve => setTimeout(resolve, 1500));
@@ -27,7 +27,7 @@ export function AuthCallback() {
 
         setStatus('Loading your store...');
         try {
-          const stores = await adminApi.getStores();
+          const stores = await adminApi.getMyStores();
           if (stores && stores.length > 0) {
             // Returning user — go to dashboard
             navigate('/admin', { replace: true });
