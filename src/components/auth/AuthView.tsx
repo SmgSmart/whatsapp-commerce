@@ -13,15 +13,12 @@ export function AuthView() {
   const [error, setError] = useState<string | null>(null);
   
   const navigate = useNavigate();
-  const { signIn } = useAuth();
+  const { signInWithGoogle } = useAuth();
 
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
-      await authClient.signIn.social({
-        provider: 'google',
-        callbackURL: `${window.location.origin}/admin`,
-      });
+      await signInWithGoogle();
     } catch (err: any) {
       setError(err.message || 'Google sign-in failed');
     } finally {
@@ -31,23 +28,7 @@ export function AuthView() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      if (isSignUp) {
-        // In a real Neon Auth setup, you'd call a signUp method here
-        // For now, we simulate success or show how to integrate
-        throw new Error('Sign up via API is currently being wired. Please use the Neon Auth portal or wait for the SDK integration.');
-      } else {
-        await signIn(email, password);
-        navigate('/admin');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Authentication failed');
-    } finally {
-      setLoading(false);
-    }
+    handleGoogleSignIn();
   };
 
   return (

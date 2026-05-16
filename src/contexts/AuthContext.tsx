@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { authApi } from '../lib/api';
 import { authClient } from '../lib/auth-client';
 import type { AdminUser } from '../lib/types';
 
