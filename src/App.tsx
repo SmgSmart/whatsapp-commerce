@@ -11,6 +11,7 @@ import { BusinessSettings } from './pages/admin/BusinessSettings';
 import { AuthView } from './components/auth/AuthView';
 import { AccountView } from './components/auth/AccountView';
 import { Onboarding } from './pages/admin/Onboarding';
+import { Login } from './pages/admin/Login';
 
 function App() {
   return (
@@ -23,8 +24,8 @@ function App() {
             <Route path="/store/:slug" element={<Store />} />
 
             {/* Admin Auth */}
-            <Route path="/admin/login" element={<AuthView />} />
-            <Route path="/admin/signup" element={<AuthView />} />
+            <Route path="/admin/login" element={<Login />} />
+            <Route path="/admin/signup" element={<Login />} />
 
             {/* Protected Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>
