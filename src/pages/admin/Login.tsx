@@ -23,15 +23,7 @@ export function Login() {
                     <p className="text-gray-500 mt-3 text-lg">Manage your WhatsApp store with ease</p>
                 </div>
 
-                <AuthView 
-                    appearance={{
-                        theme: 'light',
-                        variables: {
-                            borderRadius: '12px',
-                            colorPrimary: '#2563eb',
-                        }
-                    }}
-                />
+                <AuthView />
 
                 <div className="mt-10 pt-8 border-t border-gray-50 flex items-center justify-center gap-8">
                     <button

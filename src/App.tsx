@@ -8,7 +8,7 @@ import { Dashboard } from './pages/admin/Dashboard';
 import { CategoryManager } from './pages/admin/CategoryManager';
 import { ProductManager } from './pages/admin/ProductManager';
 import { BusinessSettings } from './pages/admin/BusinessSettings';
-import { AuthView, AccountView } from '@neondatabase/auth-ui';
+import { AccountView } from '@neondatabase/auth-ui';
 import '@neondatabase/auth-ui/css'; // Correct path to the official styles!
 import { Onboarding } from './pages/admin/Onboarding';
 import { Login } from './pages/admin/Login';
