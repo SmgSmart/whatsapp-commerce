@@ -9,7 +9,11 @@ import { authClient } from './lib/auth-client';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <NeonAuthUIProvider authClient={authClient}>
+    <NeonAuthUIProvider 
+      authClient={authClient}
+      credentials={false}
+      signUp={false}
+    >
       <App />
     </NeonAuthUIProvider>
   </StrictMode>
