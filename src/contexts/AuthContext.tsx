@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const signInWithGoogle = async () => {
         await authClient.signIn.social({
             provider: 'google',
-            callbackURL: window.location.origin + '/admin'
+            callbackURL: window.location.origin + '/auth/callback'
         });
     };
 

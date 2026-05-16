@@ -11,6 +11,7 @@ import { BusinessSettings } from './pages/admin/BusinessSettings';
 import { AccountView } from './components/auth/AccountView';
 import { Onboarding } from './pages/admin/Onboarding';
 import { Login } from './pages/admin/Login';
+import { AuthCallback } from './pages/AuthCallback';
 
 function App() {
   return (
@@ -21,6 +22,9 @@ function App() {
             {/* Public Store Routes */}
             <Route path="/" element={<StoreDirectory />} />
             <Route path="/store/:slug" element={<Store />} />
+
+            {/* OAuth Callback Handler */}
+            <Route path="/auth/callback" element={<AuthCallback />} />
 
             {/* Admin Auth */}
             <Route path="/admin/login" element={<Login />} />
