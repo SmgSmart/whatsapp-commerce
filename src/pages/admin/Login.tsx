@@ -24,7 +24,7 @@ export function Login() {
                 </div>
 
                 <AuthView 
-                    callbackURL={window.location.origin + "/auth/success"}
+                    callbackURL={window.location.origin + "/api/auth/callback/google"}
                     redirectTo={window.location.origin + "/auth/success"}
                 />
 

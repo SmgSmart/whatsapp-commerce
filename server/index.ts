@@ -36,40 +36,14 @@ app.use('/api/auth', createProxyMiddleware({
     return finalPath;
   },
   secure: true,
-  logger: console,
   on: {
-    proxyReq: (proxyReq: any, req: any) => {
-      // Pass the real Host to Neon so it knows which site we're targeting
-      const targetUrl = new URL(env.neonAuthUrl || '');
-      proxyReq.setHeader('host', targetUrl.host);
-      
-      // If there's an origin or referer from the browser, rewrite it to match Neon's expectation
-      if (req.headers.origin) {
-        proxyReq.setHeader('origin', targetUrl.origin);
-      }
-      if (req.headers.referer) {
-        try {
-          const refUrl = new URL(req.headers.referer);
-          refUrl.host = targetUrl.host;
-          refUrl.protocol = targetUrl.protocol;
-          proxyReq.setHeader('referer', refUrl.toString());
-        } catch (e) {
-          // Ignore invalid referers
-        }
-      }
-    },
     proxyRes: (proxyRes: any) => {
-      // FIX: Transform cookies to ensure they are accepted by the browser on the current domain
+      // Correctly transform cookies by removing the Domain attribute and ensuring they are Secure/Lax
       const sc = proxyRes.headers['set-cookie'];
       if (sc) {
         const cookies = Array.isArray(sc) ? sc : [sc];
         proxyRes.headers['set-cookie'] = cookies.map(c => {
-          // Remove Domain attribute to make it a "host-only" cookie for the current domain
-          let transformed = c.replace(/Domain=[^;]+;?\s*/i, '');
-          // Ensure it's Secure and Lax for compatibility
-          if (!transformed.includes('Secure')) transformed += '; Secure';
-          if (!transformed.includes('SameSite')) transformed += '; SameSite=Lax';
-          return transformed;
+          return c.replace(/Domain=[^;]+;?\s*/i, '') + '; Secure; SameSite=Lax';
         });
       }
     }
