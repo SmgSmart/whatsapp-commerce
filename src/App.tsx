@@ -8,7 +8,8 @@ import { Dashboard } from './pages/admin/Dashboard';
 import { CategoryManager } from './pages/admin/CategoryManager';
 import { ProductManager } from './pages/admin/ProductManager';
 import { BusinessSettings } from './pages/admin/BusinessSettings';
-import { AccountView } from './components/auth/AccountView';
+import { AuthView, AccountView } from '@neondatabase/auth-ui';
+import '@neondatabase/auth-ui/index.css'; // Don't forget the styles!
 import { Onboarding } from './pages/admin/Onboarding';
 import { Login } from './pages/admin/Login';
 import { AuthCallback } from './pages/AuthCallback';
