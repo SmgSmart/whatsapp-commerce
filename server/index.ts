@@ -19,12 +19,13 @@ const allowedOrigins = [
 
 // 1. Auth Proxy MUST be first (before express.json)
 app.use('/api/auth', createProxyMiddleware({
-  // Use the BASE domain as target (without /neondb/auth)
   target: env.neonAuthUrl?.split('/neondb')[0],
   changeOrigin: true,
-  pathRewrite: {
-    // FORCE every request to go into the /neondb/auth/ folder
-    '^/api/auth': '/neondb/auth',
+  pathRewrite: (path) => {
+    // Prepend /neondb/auth to the path that Express has already stripped
+    const newPath = '/neondb/auth' + (path.startsWith('/') ? path : '/' + path);
+    console.log(`[PROXY] ${path} -> ${newPath}`);
+    return newPath;
   },
   cookieDomainRewrite: "",
   secure: true,
