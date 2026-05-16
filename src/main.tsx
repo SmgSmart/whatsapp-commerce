@@ -13,6 +13,9 @@ createRoot(document.getElementById('root')!).render(
       authClient={authClient}
       credentials={false}
       signUp={false}
+      social={{
+        providers: ['google']
+      }}
     >
       <App />
     </NeonAuthUIProvider>
