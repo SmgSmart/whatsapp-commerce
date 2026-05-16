@@ -6,8 +6,6 @@ import { adminApi } from '../lib/api';
 export function AuthCallback() {
   const [status, setStatus] = useState('Completing sign in...');
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
   useEffect(() => {
     const handleCallback = async () => {
       // Session verifier is processed automatically by the Neon Auth SDK
