@@ -16,7 +16,7 @@ createRoot(document.getElementById('root')!).render(
       social={{
         providers: ['google']
       }}
-      redirectTo="/auth/success"
+      redirectTo={window.location.origin + "/auth/success"}
     >
       <App />
     </NeonAuthUIProvider>
