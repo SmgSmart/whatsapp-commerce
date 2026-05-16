@@ -9,7 +9,7 @@ import { CategoryManager } from './pages/admin/CategoryManager';
 import { ProductManager } from './pages/admin/ProductManager';
 import { BusinessSettings } from './pages/admin/BusinessSettings';
 import { AuthView, AccountView } from '@neondatabase/auth-ui';
-import '@neondatabase/auth-ui/index.css'; // Don't forget the styles!
+import '@neondatabase/auth-ui/css'; // Correct path to the official styles!
 import { Onboarding } from './pages/admin/Onboarding';
 import { Login } from './pages/admin/Login';
 import { AuthCallback } from './pages/AuthCallback';
