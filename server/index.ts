@@ -21,6 +21,8 @@ const allowedOrigins = [
 app.use('/api/auth', createProxyMiddleware({
   target: env.neonAuthUrl?.split('/neondb')[0],
   changeOrigin: true,
+  xfwd: true,
+  cookieDomainRewrite: "",
   pathRewrite: (path) => {
     // Better Auth is picky about the trailing slash on the base path
     // If path is empty or just '/', we must NOT add a trailing slash to the mount point
@@ -33,13 +35,27 @@ app.use('/api/auth', createProxyMiddleware({
     console.log(`[PROXY] ${path} -> ${finalPath}`);
     return finalPath;
   },
-  cookieDomainRewrite: "",
   secure: true,
   logger: console,
   on: {
     proxyReq: (proxyReq: any, req: any) => {
       if (req.headers.origin && env.neonAuthUrl) {
         proxyReq.setHeader('origin', new URL(env.neonAuthUrl).origin);
+      }
+    },
+    proxyRes: (proxyRes: any) => {
+      // FIX: Transform cookies to ensure they are accepted by the browser on the current domain
+      const sc = proxyRes.headers['set-cookie'];
+      if (sc) {
+        const cookies = Array.isArray(sc) ? sc : [sc];
+        proxyRes.headers['set-cookie'] = cookies.map(c => {
+          // Remove Domain attribute to make it a "host-only" cookie for the current domain
+          let transformed = c.replace(/Domain=[^;]+;?\s*/i, '');
+          // Ensure it's Secure and Lax for compatibility
+          if (!transformed.includes('Secure')) transformed += '; Secure';
+          if (!transformed.includes('SameSite')) transformed += '; SameSite=Lax';
+          return transformed;
+        });
       }
     }
   }
