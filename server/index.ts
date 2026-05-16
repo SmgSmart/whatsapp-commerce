@@ -39,8 +39,23 @@ app.use('/api/auth', createProxyMiddleware({
   logger: console,
   on: {
     proxyReq: (proxyReq: any, req: any) => {
-      if (req.headers.origin && env.neonAuthUrl) {
-        proxyReq.setHeader('origin', new URL(env.neonAuthUrl).origin);
+      // Pass the real Host to Neon so it knows which site we're targeting
+      const targetUrl = new URL(env.neonAuthUrl || '');
+      proxyReq.setHeader('host', targetUrl.host);
+      
+      // If there's an origin or referer from the browser, rewrite it to match Neon's expectation
+      if (req.headers.origin) {
+        proxyReq.setHeader('origin', targetUrl.origin);
+      }
+      if (req.headers.referer) {
+        try {
+          const refUrl = new URL(req.headers.referer);
+          refUrl.host = targetUrl.host;
+          refUrl.protocol = targetUrl.protocol;
+          proxyReq.setHeader('referer', refUrl.toString());
+        } catch (e) {
+          // Ignore invalid referers
+        }
       }
     },
     proxyRes: (proxyRes: any) => {
