@@ -6,14 +6,14 @@ import type { AdminUser } from '../lib/types';
 interface AuthContextType {
     user: AdminUser | null;
     loading: boolean;
-    signIn: (email: string, password: string) => Promise<void>;
+    signInWithGoogle: () => Promise<void>;
     signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
     user: null,
     loading: true,
-    signIn: async () => { },
+    signInWithGoogle: async () => { },
     signOut: async () => { },
 });
 
@@ -38,9 +38,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         checkSession();
     }, []);
 
-    const signIn = async (email: string, password: string) => {
-        const { user } = await authApi.login(email, password);
-        setUser(user);
+    const signInWithGoogle = async () => {
+        await authClient.signIn.social({
+            provider: 'google',
+            callbackURL: window.location.origin + '/admin'
+        });
     };
 
     const signOut = async () => {
@@ -49,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+        <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOut }}>
             {children}
         </AuthContext.Provider>
     );
