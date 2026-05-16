@@ -13,6 +13,7 @@ import '@neondatabase/auth-ui/css'; // Correct path to the official styles!
 import { Onboarding } from './pages/admin/Onboarding';
 import { Login } from './pages/admin/Login';
 import { AuthCallback } from './pages/AuthCallback';
+import { AuthSuccess } from './pages/AuthSuccess';
 
 function App() {
   return (
@@ -24,8 +25,9 @@ function App() {
             <Route path="/" element={<StoreDirectory />} />
             <Route path="/store/:slug" element={<Store />} />
 
-            {/* OAuth Callback Handler */}
+            {/* OAuth Callback Handlers */}
             <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/auth/success" element={<AuthSuccess />} />
 
             {/* Admin Auth */}
             <Route path="/admin/login" element={<Login />} />
