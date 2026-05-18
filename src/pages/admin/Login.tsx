@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Store } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { authClient } from '../../lib/auth-client';
 
 export function Login() {
     const navigate = useNavigate();
@@ -23,9 +24,15 @@ export function Login() {
                 </div>
 
                 <button
-                    onClick={() => {
-                        const neonUrl = "https://ep-divine-grass-aqm5ypmq.neonauth.c-8.us-east-1.aws.neon.tech/neondb/auth/sign-in/social?provider=google&callbackURL=" + encodeURIComponent(window.location.origin + "/auth/success");
-                        window.location.href = neonUrl;
+                    onClick={async () => {
+                        try {
+                            await authClient.signIn.social({
+                                provider: 'google',
+                                callbackURL: window.location.origin + "/auth/success"
+                            });
+                        } catch (err) {
+                            console.error("Google sign in failed:", err);
+                        }
                     }}
                     className="w-full bg-white hover:bg-gray-50 text-gray-700 font-semibold py-4 rounded-xl border-2 border-gray-100 transition-all duration-200 flex items-center justify-center gap-3 shadow-sm hover:shadow-md active:scale-[0.98]"
                 >
