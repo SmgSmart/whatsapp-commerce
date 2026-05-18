@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Ensure all input, textarea, and select text is dark and visible on light form backgrounds */
+input, textarea, select {
+  color: #1f2937 !important; /* text-gray-800 */
+}

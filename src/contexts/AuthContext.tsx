@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext } from 'react';
+import { useStore } from '@neondatabase/auth/react';
 import { authClient } from '../lib/auth-client';
 import type { AdminUser } from '../lib/types';
 
@@ -17,25 +18,15 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<AdminUser | null>(null);
-    const [loading, setLoading] = useState(true);
+    const sessionStore = useStore(authClient.useSession);
+    const session = sessionStore?.data;
+    const isPending = sessionStore?.isPending;
 
-    useEffect(() => {
-        const checkSession = async () => {
-            const { data: session } = await authClient.getSession();
-            if (session?.user) {
-                setUser({
-                    id: session.user.id,
-                    email: session.user.email,
-                    display_name: session.user.name,
-                });
-            } else {
-                setUser(null);
-            }
-            setLoading(false);
-        };
-        checkSession();
-    }, []);
+    const user = session?.user ? {
+        id: session.user.id,
+        email: session.user.email,
+        display_name: session.user.name || 'User',
+    } : null;
 
     const signInWithGoogle = async () => {
         await authClient.signIn.social({
@@ -46,11 +37,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const signOut = async () => {
         await authClient.signOut();
-        setUser(null);
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOut }}>
+        <AuthContext.Provider value={{ user, loading: isPending, signInWithGoogle, signOut }}>
             {children}
         </AuthContext.Provider>
     );

@@ -31,7 +31,7 @@ export function Dashboard() {
         loadData();
     }, []);
 
-    const storeUrl = store ? `${window.location.origin}/s/${store.slug}` : '';
+    const storeUrl = store ? `${window.location.origin}/store/${store.slug}` : '';
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(storeUrl);

@@ -28,6 +28,7 @@ export function AdminLayout() {
     };
 
     const [checkingStore, setCheckingStore] = useState(true);
+    const [storeSlug, setStoreSlug] = useState<string | null>(null);
 
     useEffect(() => {
         const checkStoreStatus = async () => {
@@ -47,6 +48,8 @@ export function AdminLayout() {
                 if (!stores || stores.length === 0) {
                     console.log('No stores found, redirecting to onboarding...');
                     navigate('/admin/onboarding', { replace: true });
+                } else {
+                    setStoreSlug(stores[0].slug || null);
                 }
             } catch (error: any) {
                 console.error('Error checking store status:', error);
@@ -111,7 +114,7 @@ export function AdminLayout() {
 
                     <div className="pt-4 mt-4 border-t border-gray-100">
                         <Link
-                            to="/"
+                            to={storeSlug ? `/store/${storeSlug}` : '/'}
                             className="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
                         >
                             <Eye className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400" />
@@ -142,7 +145,7 @@ export function AdminLayout() {
                     </div>
 
                     <Link
-                        to="/"
+                        to={storeSlug ? `/store/${storeSlug}` : '/'}
                         className="flex items-center gap-1.5 text-sm font-medium text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-100 transition-colors"
                     >
                         <Eye className="w-4 h-4" />
