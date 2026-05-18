@@ -1,8 +1,35 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle2, ArrowRight, Store } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Store, Loader2 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { adminApi } from '../lib/api';
 
 export function AuthSuccess() {
     const navigate = useNavigate();
+    const { loading: authLoading } = useAuth();
+    const [loadingStoreCheck, setLoadingStoreCheck] = useState(false);
+
+    const handleContinue = async () => {
+        try {
+            setLoadingStoreCheck(true);
+            const stores = await adminApi.getMyStores();
+            if (stores && stores.length > 0) {
+                // Existing user — navigate straight to admin dashboard
+                navigate('/admin');
+            } else {
+                // New user — navigate to store onboarding/creation page
+                navigate('/admin/onboarding');
+            }
+        } catch (err) {
+            console.error('Failed to load user stores during redirect check:', err);
+            // Fallback to /admin
+            navigate('/admin');
+        } finally {
+            setLoadingStoreCheck(false);
+        }
+    };
+
+    const isInteractionDisabled = authLoading || loadingStoreCheck;
 
     return (
         <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4 font-sans">
@@ -14,25 +41,36 @@ export function AuthSuccess() {
                 </div>
 
                 <h1 className="text-3xl font-extrabold text-gray-900 mb-4 tracking-tight">
-                    Account Created!
+                    Account Ready!
                 </h1>
                 
                 <p className="text-gray-500 text-lg mb-10 leading-relaxed">
-                    Your account is ready. Get ready to start creating your WhatsApp store and reaching customers.
+                    Your account is verified. Click continue to enter your dashboard and start managing your store.
                 </p>
 
                 <div className="space-y-4">
                     <button
-                        onClick={() => navigate('/admin/login')}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 rounded-2xl transition-all duration-200 flex items-center justify-center gap-3 shadow-lg shadow-blue-200 active:scale-[0.98]"
+                        onClick={handleContinue}
+                        disabled={isInteractionDisabled}
+                        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold py-5 rounded-2xl transition-all duration-200 flex items-center justify-center gap-3 shadow-lg shadow-blue-200 active:scale-[0.98] disabled:cursor-not-allowed"
                     >
-                        Continue to Dashboard
-                        <ArrowRight className="w-5 h-5" />
+                        {isInteractionDisabled ? (
+                            <>
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                                Processing...
+                            </>
+                        ) : (
+                            <>
+                                Continue to Dashboard
+                                <ArrowRight className="w-5 h-5" />
+                            </>
+                        )}
                     </button>
 
                     <button
                         onClick={() => navigate('/')}
-                        className="w-full bg-white hover:bg-gray-50 text-gray-500 font-semibold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 group"
+                        disabled={isInteractionDisabled}
+                        className="w-full bg-white hover:bg-gray-50 disabled:hover:bg-white text-gray-500 font-semibold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <Store className="w-4 h-4" />
                         Back to Store
