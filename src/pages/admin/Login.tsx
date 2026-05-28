@@ -58,7 +58,8 @@ export function Login() {
         setError('');
         setResendLoading(true);
         try {
-            await (authClient as any).sendVerificationOtp({ email, type: 'email-verification' });
+            // Must use emailOtp.sendVerificationOtp — maps to /api/auth/email-otp/send-verification-otp
+            await (authClient as any).emailOtp.sendVerificationOtp({ email, type: 'email-verification' });
             setResendCountdown(60);
         } catch (err: any) {
             console.error('Error resending OTP:', err);
@@ -88,7 +89,10 @@ export function Login() {
                     awaitingOtp.current = false; // Reset if signup failed
                     throw new Error(signUpError.message || 'Sign up failed');
                 }
-                
+
+                // Explicitly send the OTP — signUp alone does not auto-send an email-otp
+                await (authClient as any).emailOtp.sendVerificationOtp({ email, type: 'email-verification' });
+                setResendCountdown(60); // Start cooldown so user can't spam resend immediately
                 setShowOtp(true);
             } else {
                 const { error: signInError } = await authClient.signIn.email({
@@ -101,8 +105,9 @@ export function Login() {
                     if (signInError.code === 'EMAIL_NOT_VERIFIED' || signInError.message?.toLowerCase().includes('not verified')) {
                         // Set the ref to block redirects
                         awaitingOtp.current = true;
-                        // Resend the OTP to be safe
-                        await (authClient as any).sendVerificationOtp({ email, type: 'email-verification' });
+                        // Must use emailOtp.sendVerificationOtp — maps to /api/auth/email-otp/send-verification-otp
+                        await (authClient as any).emailOtp.sendVerificationOtp({ email, type: 'email-verification' });
+                        setResendCountdown(60);
                         setShowOtp(true);
                         return;
                     }
@@ -127,8 +132,9 @@ export function Login() {
         setLoading(true);
 
         try {
-            // The @neondatabase/auth types are outdated; verifyEmail({ email, otp }) works at runtime
-            const { error: verifyError } = await (authClient as any).verifyEmail({ email, otp });
+            // Must use emailOtp.verifyEmail — maps to /api/auth/email-otp/verify-email
+            // authClient.verifyEmail() maps to /auth/verify-email (link flow) which returns 404
+            const { error: verifyError } = await (authClient as any).emailOtp.verifyEmail({ email, otp });
             if (verifyError) throw new Error(verifyError.message || 'Invalid verification code');
 
             // Clear the OTP guard so future redirects work normally
