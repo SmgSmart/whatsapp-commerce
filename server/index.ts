@@ -37,12 +37,18 @@ app.use('/api/auth', createProxyMiddleware({
   secure: true,
   on: {
     proxyReq: (proxyReq: any, req: any) => {
+      // Rewrite the Origin header to match the target so Better Auth CSRF passes
+      if (env.neonAuthUrl) {
+        const targetOrigin = env.neonAuthUrl.split('/neondb')[0];
+        proxyReq.setHeader('origin', targetOrigin);
+      }
+
       // Remove headers that might confuse Better Auth's host/base URL check
       proxyReq.removeHeader('x-forwarded-host');
       proxyReq.removeHeader('x-forwarded-proto');
       proxyReq.removeHeader('x-forwarded-port');
       
-      console.log(`[PROXY REQ] ${req.method} ${req.url} -> Target Host: ${proxyReq.getHeader('host')}`);
+      console.log(`[PROXY REQ] ${req.method} ${req.url} -> Target Host: ${proxyReq.getHeader('host')}, Origin: ${proxyReq.getHeader('origin')}`);
     },
     proxyRes: (proxyRes: any, req: any) => {
       console.log(`[PROXY RES] ${req.method} ${req.url} -> Status: ${proxyRes.statusCode}`);
