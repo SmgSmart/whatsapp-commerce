@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Store, Mail, Lock, User as UserIcon, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,11 +19,16 @@ export function Login() {
 
     const [showOtp, setShowOtp] = useState(false);
     const [otp, setOtp] = useState('');
+    // useRef updates synchronously — prevents the redirect guard from firing
+    // during the render cycle immediately after signUp creates a session
+    const awaitingOtp = useRef(false);
 
-    // If already logged in, go to admin
-    if (user) {
-        navigate('/admin');
-    }
+    // Only auto-redirect to admin if we are NOT waiting for OTP verification
+    useEffect(() => {
+        if (user && !awaitingOtp.current) {
+            navigate('/admin');
+        }
+    }, [user]);
 
     const handleManualAuth = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -39,8 +44,9 @@ export function Login() {
                 });
                 if (signUpError) throw new Error(signUpError.message || 'Sign up failed');
                 
-                // Account created successfully but needs verification
-                // Transition to OTP screen
+                // Account created — mark OTP mode BEFORE any state update
+                // so the user redirect useEffect doesn't fire prematurely
+                awaitingOtp.current = true;
                 setShowOtp(true);
             } else {
                 const { error: signInError } = await authClient.signIn.email({
@@ -81,7 +87,9 @@ export function Login() {
             const { error: verifyError } = await (authClient as any).verifyEmail({ email, otp });
             if (verifyError) throw new Error(verifyError.message || 'Invalid verification code');
 
-            // Success! The session will be updated, redirect to success
+            // Clear the OTP guard so future redirects work normally
+            awaitingOtp.current = false;
+            // Success! Navigate to the "Account Ready" page
             navigate('/auth/success');
         } catch (err: any) {
             console.error('OTP Verification error:', err);
