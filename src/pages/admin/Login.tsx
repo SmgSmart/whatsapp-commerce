@@ -17,6 +17,9 @@ export function Login() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
+    const [showOtp, setShowOtp] = useState(false);
+    const [otp, setOtp] = useState('');
+
     // If already logged in, go to admin
     if (user) {
         navigate('/admin');
@@ -36,14 +39,25 @@ export function Login() {
                 });
                 if (signUpError) throw new Error(signUpError.message || 'Sign up failed');
                 
-                // Account created successfully! Redirect to the success intermediary page
-                navigate('/auth/success');
+                // Account created successfully but needs verification
+                // Transition to OTP screen
+                setShowOtp(true);
             } else {
                 const { error: signInError } = await authClient.signIn.email({
                     email,
                     password,
                 });
-                if (signInError) throw new Error(signInError.message || 'Invalid email or password');
+                
+                if (signInError) {
+                    // Check if it's an unverified email error
+                    if (signInError.code === 'EMAIL_NOT_VERIFIED' || signInError.message?.toLowerCase().includes('not verified')) {
+                        // Resend the OTP to be safe
+                        await (authClient as any).sendVerificationOtp({ email, type: 'email-verification' });
+                        setShowOtp(true);
+                        return;
+                    }
+                    throw new Error(signInError.message || 'Invalid email or password');
+                }
                 
                 // AuthContext will catch the session update automatically
                 // Navigate directly to admin
@@ -52,6 +66,26 @@ export function Login() {
         } catch (err: any) {
             console.error('Authentication error:', err);
             setError(err.message || 'An error occurred during authentication.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleVerifyOtp = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+
+        try {
+            // The @neondatabase/auth types are outdated; verifyEmail({ email, otp }) works at runtime
+            const { error: verifyError } = await (authClient as any).verifyEmail({ email, otp });
+            if (verifyError) throw new Error(verifyError.message || 'Invalid verification code');
+
+            // Success! The session will be updated, redirect to success
+            navigate('/auth/success');
+        } catch (err: any) {
+            console.error('OTP Verification error:', err);
+            setError(err.message || 'An error occurred while verifying the code.');
         } finally {
             setLoading(false);
         }
@@ -70,10 +104,10 @@ export function Login() {
                         <Store className="w-8 h-8 text-white -rotate-3" />
                     </div>
                     <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-                        {isSignUp ? 'Create Account' : 'Welcome Back'}
+                        {showOtp ? 'Check your email' : isSignUp ? 'Create Account' : 'Welcome Back'}
                     </h1>
                     <p className="text-gray-500 mt-2 text-md">
-                        {isSignUp ? 'Start building your WhatsApp store' : 'Manage your WhatsApp store with ease'}
+                        {showOtp ? `We sent a code to ${email}` : isSignUp ? 'Start building your WhatsApp store' : 'Manage your WhatsApp store with ease'}
                     </p>
                 </div>
 
@@ -83,103 +117,162 @@ export function Login() {
                     </div>
                 )}
 
-                <form onSubmit={handleManualAuth} className="space-y-4 mb-6">
-                    <AnimatePresence mode="popLayout">
-                        {isSignUp && (
-                            <motion.div
-                                initial={{ opacity: 0, height: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, height: "auto", scale: 1 }}
-                                exit={{ opacity: 0, height: 0, scale: 0.95 }}
-                                transition={{ duration: 0.25, ease: "easeInOut" }}
-                            >
-                                <label className="block text-sm font-semibold text-gray-700 mb-1.5 mt-1">Full Name</label>
+                <AnimatePresence mode="wait">
+                    {!showOtp ? (
+                        <motion.form 
+                            key="auth-form"
+                            onSubmit={handleManualAuth} 
+                            className="space-y-4 mb-6"
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <AnimatePresence mode="popLayout">
+                                {isSignUp && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, height: "auto", scale: 1 }}
+                                        exit={{ opacity: 0, height: 0, scale: 0.95 }}
+                                        transition={{ duration: 0.25, ease: "easeInOut" }}
+                                    >
+                                        <label className="block text-sm font-semibold text-gray-700 mb-1.5 mt-1">Full Name</label>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                                <UserIcon className="h-5 w-5 text-gray-400" />
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                                required={isSignUp}
+                                                placeholder="John Doe"
+                                                className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
+                                            />
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                        <UserIcon className="h-5 w-5 text-gray-400" />
+                                        <Mail className="h-5 w-5 text-gray-400" />
                                     </div>
                                     <input
-                                        type="text"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        required={isSignUp}
-                                        placeholder="John Doe"
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                        placeholder="you@example.com"
                                         className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
                                     />
                                 </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                <Mail className="h-5 w-5 text-gray-400" />
                             </div>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                placeholder="you@example.com"
-                                className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
-                            />
-                        </div>
-                    </div>
 
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                <Lock className="h-5 w-5 text-gray-400" />
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <Lock className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <input
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                        minLength={8}
+                                        placeholder="••••••••"
+                                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
+                                    />
+                                </div>
                             </div>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                minLength={8}
-                                placeholder="••••••••"
-                                className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
-                            />
-                        </div>
-                    </div>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-all duration-200 shadow-md shadow-blue-200 active:scale-[0.98] flex items-center justify-center disabled:opacity-70 disabled:active:scale-100 mt-2"
-                    >
-                        {loading ? (
-                            <Loader2 className="w-5 h-5 animate-spin" />
-                        ) : (
-                            isSignUp ? 'Create Account' : 'Sign In'
-                        )}
-                    </button>
-                </form>
-
-                <div className="mt-8 pt-6 border-t border-gray-50 text-center">
-                    <p className="text-sm text-gray-500 mb-4">
-                        {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-                        <button
-                            onClick={() => {
-                                setIsSignUp(!isSignUp);
-                                setError('');
-                            }}
-                            className="text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-all duration-200 shadow-md shadow-blue-200 active:scale-[0.98] flex items-center justify-center disabled:opacity-70 disabled:active:scale-100 mt-2"
+                            >
+                                {loading ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : (
+                                    isSignUp ? 'Create Account' : 'Sign In'
+                                )}
+                            </button>
+                        </motion.form>
+                    ) : (
+                        <motion.form
+                            key="otp-form"
+                            onSubmit={handleVerifyOtp}
+                            className="space-y-4 mb-6"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 20 }}
+                            transition={{ duration: 0.2 }}
                         >
-                            {isSignUp ? 'Sign In' : 'Sign Up'}
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1.5 text-center">6-Digit Code</label>
+                                <input
+                                    type="text"
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value)}
+                                    required
+                                    maxLength={6}
+                                    placeholder="000000"
+                                    className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 text-center text-3xl tracking-widest font-bold font-mono"
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={loading || otp.length < 6}
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-all duration-200 shadow-md shadow-blue-200 active:scale-[0.98] flex items-center justify-center disabled:opacity-70 disabled:active:scale-100 mt-4"
+                            >
+                                {loading ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : (
+                                    'Verify Email'
+                                )}
+                            </button>
+                            
+                            <div className="text-center mt-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowOtp(false)}
+                                    className="text-sm font-semibold text-gray-500 hover:text-gray-700 transition-colors"
+                                >
+                                    Back to login
+                                </button>
+                            </div>
+                        </motion.form>
+                    )}
+                </AnimatePresence>
+
+                {!showOtp && (
+                    <div className="mt-8 pt-6 border-t border-gray-50 text-center">
+                        <p className="text-sm text-gray-500 mb-4">
+                            {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+                            <button
+                                onClick={() => {
+                                    setIsSignUp(!isSignUp);
+                                    setError('');
+                                }}
+                                className="text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+                            >
+                                {isSignUp ? 'Sign In' : 'Sign Up'}
+                            </button>
+                        </p>
+                        
+                        <button
+                            onClick={() => navigate('/')}
+                            className="text-sm font-semibold text-gray-400 hover:text-gray-600 transition-colors inline-flex items-center gap-2 group"
+                        >
+                            <Store className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                            Return to Directory
                         </button>
-                    </p>
-                    
-                    <button
-                        onClick={() => navigate('/')}
-                        className="text-sm font-semibold text-gray-400 hover:text-gray-600 transition-colors inline-flex items-center gap-2 group"
-                    >
-                        <Store className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                        Return to Directory
-                    </button>
-                </div>
+                    </div>
+                )}
             </motion.div>
         </div>
     );
