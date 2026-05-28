@@ -42,6 +42,32 @@ export function Login() {
         }
     }, [user, navigate]);
 
+    const [resendCountdown, setResendCountdown] = useState(0);
+    const [resendLoading, setResendLoading] = useState(false);
+
+    useEffect(() => {
+        if (resendCountdown <= 0) return;
+        const timer = setTimeout(() => {
+            setResendCountdown(prev => prev - 1);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, [resendCountdown]);
+
+    const handleResendOtp = async () => {
+        if (resendCountdown > 0 || resendLoading) return;
+        setError('');
+        setResendLoading(true);
+        try {
+            await (authClient as any).sendVerificationOtp({ email, type: 'email-verification' });
+            setResendCountdown(60);
+        } catch (err: any) {
+            console.error('Error resending OTP:', err);
+            setError(err.message || 'Failed to resend verification code.');
+        } finally {
+            setResendLoading(false);
+        }
+    };
+
     const handleManualAuth = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
@@ -262,7 +288,17 @@ export function Login() {
                                 )}
                             </button>
                             
-                            <div className="text-center mt-4">
+                             <div className="text-center mt-4 flex flex-col items-center gap-3">
+                                <button
+                                    type="button"
+                                    disabled={resendCountdown > 0 || resendLoading}
+                                    onClick={handleResendOtp}
+                                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 disabled:text-gray-400 transition-colors flex items-center justify-center gap-1.5 cursor-pointer disabled:cursor-not-allowed"
+                                >
+                                    {resendLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                                    {resendCountdown > 0 ? `Resend Code (${resendCountdown}s)` : 'Resend Code'}
+                                </button>
+
                                 <button
                                     type="button"
                                     onClick={async () => {
