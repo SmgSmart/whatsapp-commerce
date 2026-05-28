@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Store, Mail, Lock, User as UserIcon, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { authClient } from '../../lib/auth-client';
 
@@ -55,7 +56,12 @@ export function Login() {
 
     return (
         <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4 font-sans">
-            <div className="w-full max-w-md bg-white rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-10 border border-gray-100">
+            <motion.div 
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="w-full max-w-md bg-white rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-10 border border-gray-100"
+            >
                 <div className="flex flex-col items-center justify-center mb-8 text-center">
                     <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-blue-200 rotate-3">
                         <Store className="w-8 h-8 text-white -rotate-3" />
@@ -75,24 +81,31 @@ export function Login() {
                 )}
 
                 <form onSubmit={handleManualAuth} className="space-y-4 mb-6">
-                    {isSignUp && (
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Full Name</label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                    <UserIcon className="h-5 w-5 text-gray-400" />
+                    <AnimatePresence mode="popLayout">
+                        {isSignUp && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, height: "auto", scale: 1 }}
+                                exit={{ opacity: 0, height: 0, scale: 0.95 }}
+                                transition={{ duration: 0.25, ease: "easeInOut" }}
+                            >
+                                <label className="block text-sm font-semibold text-gray-700 mb-1.5 mt-1">Full Name</label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <UserIcon className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        required={isSignUp}
+                                        placeholder="John Doe"
+                                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
+                                    />
                                 </div>
-                                <input
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    required={isSignUp}
-                                    placeholder="John Doe"
-                                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
-                                />
-                            </div>
-                        </div>
-                    )}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
@@ -206,7 +219,7 @@ export function Login() {
                         Return to Directory
                     </button>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 }
