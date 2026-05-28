@@ -23,12 +23,24 @@ export function Login() {
     // during the render cycle immediately after signUp creates a session
     const awaitingOtp = useRef(false);
 
-    // Only auto-redirect to admin if we are NOT waiting for OTP verification
+    // Only auto-redirect to admin if we are fully verified
     useEffect(() => {
-        if (user && !awaitingOtp.current) {
-            navigate('/admin');
+        if (user) {
+            if (user.emailVerified) {
+                if (!awaitingOtp.current) {
+                    navigate('/admin');
+                }
+            } else {
+                // User has an unverified session (e.g., from signup or page refresh)
+                // Fill in their email and display the OTP screen automatically.
+                if (user.email) {
+                    setEmail(user.email);
+                }
+                setShowOtp(true);
+                awaitingOtp.current = true;
+            }
         }
-    }, [user]);
+    }, [user, navigate]);
 
     const handleManualAuth = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,16 +49,20 @@ export function Login() {
 
         try {
             if (isSignUp) {
+                // Set this synchronously BEFORE the API call to guarantee the redirect guard
+                // is active when Neon sets the session cookie and updates the session store.
+                awaitingOtp.current = true;
+
                 const { error: signUpError } = await authClient.signUp.email({
                     email,
                     password,
                     name,
                 });
-                if (signUpError) throw new Error(signUpError.message || 'Sign up failed');
+                if (signUpError) {
+                    awaitingOtp.current = false; // Reset if signup failed
+                    throw new Error(signUpError.message || 'Sign up failed');
+                }
                 
-                // Account created — mark OTP mode BEFORE any state update
-                // so the user redirect useEffect doesn't fire prematurely
-                awaitingOtp.current = true;
                 setShowOtp(true);
             } else {
                 const { error: signInError } = await authClient.signIn.email({
@@ -57,6 +73,8 @@ export function Login() {
                 if (signInError) {
                     // Check if it's an unverified email error
                     if (signInError.code === 'EMAIL_NOT_VERIFIED' || signInError.message?.toLowerCase().includes('not verified')) {
+                        // Set the ref to block redirects
+                        awaitingOtp.current = true;
                         // Resend the OTP to be safe
                         await (authClient as any).sendVerificationOtp({ email, type: 'email-verification' });
                         setShowOtp(true);
@@ -247,7 +265,15 @@ export function Login() {
                             <div className="text-center mt-4">
                                 <button
                                     type="button"
-                                    onClick={() => setShowOtp(false)}
+                                    onClick={async () => {
+                                        awaitingOtp.current = false;
+                                        setShowOtp(false);
+                                        try {
+                                            await authClient.signOut();
+                                        } catch (e) {
+                                            console.error('Error signing out on back:', e);
+                                        }
+                                    }}
                                     className="text-sm font-semibold text-gray-500 hover:text-gray-700 transition-colors"
                                 >
                                     Back to login

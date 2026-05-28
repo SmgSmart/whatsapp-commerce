@@ -26,6 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         id: session.user.id,
         email: session.user.email,
         display_name: session.user.name || 'User',
+        emailVerified: session.user.emailVerified,
     } : null;
 
     const signInWithGoogle = async () => {

@@ -70,7 +70,7 @@ export function AdminLayout() {
         );
     }
 
-    if (!user) {
+    if (!user || !user.emailVerified) {
         return <Navigate to="/admin/login" state={{ from: location }} replace />;
     }
 
