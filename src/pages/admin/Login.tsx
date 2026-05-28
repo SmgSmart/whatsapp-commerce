@@ -263,6 +263,10 @@ export function Login() {
                             exit={{ opacity: 0, x: 20 }}
                             transition={{ duration: 0.2 }}
                         >
+                            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-blue-700 leading-relaxed text-center">
+                                If you don't see the email, please check your <strong>Spam</strong> or <strong>Junk</strong> folder.
+                            </div>
+
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-1.5 text-center">6-Digit Code</label>
                                 <input
