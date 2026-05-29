@@ -1,7 +1,6 @@
 import express from 'express';
 import path from 'node:path';
 import cors from 'cors';
-import { createProxyMiddleware } from 'http-proxy-middleware';
 import { createUploadSignature } from './cloudinary.js';
 import { login, getSession, requireUser, type AuthedRequest } from './auth.js';
 import { env } from './env.js';
@@ -17,54 +16,79 @@ const allowedOrigins = [
   env.clientOrigin
 ].filter(Boolean);
 
-// 1. Auth Proxy MUST be first (before express.json)
-app.use('/api/auth', createProxyMiddleware({
-  target: env.neonAuthUrl?.split('/neondb')[0],
-  changeOrigin: true,
-  cookieDomainRewrite: "",
-  pathRewrite: (path) => {
-    // Better Auth is picky about the trailing slash on the base path
-    // If path is empty or just '/', we must NOT add a trailing slash to the mount point
-    const cleanPath = path.replace(/\/$/, '');
-    const newPath = '/neondb/auth' + (cleanPath.startsWith('/') ? cleanPath : '/' + cleanPath);
-    
-    // Ensure the result doesn't have a double slash unless it's the root
-    const finalPath = newPath === '/neondb/auth/' ? '/neondb/auth' : newPath;
-    
-    console.log(`[PROXY] ${path} -> ${finalPath}`);
-    return finalPath;
-  },
-  secure: true,
-  on: {
-    proxyReq: (proxyReq: any, req: any) => {
-      // Rewrite the Origin header to match the target so Better Auth CSRF passes
-      if (env.neonAuthUrl) {
-        const targetOrigin = env.neonAuthUrl.split('/neondb')[0];
-        proxyReq.setHeader('origin', targetOrigin);
-      }
+// 1. Auth Proxy — fetch-based so it works in both serverless (Vercel) and persistent (Render/local) runtimes.
+// http-proxy-middleware relies on stream piping which breaks in serverless contexts.
+app.use('/api/auth', async (req: express.Request, res: express.Response) => {
+  const neonBase = env.neonAuthUrl?.split('/neondb')[0];
+  if (!neonBase) {
+    res.status(500).json({ error: 'VITE_NEON_AUTH_URL is not configured on the server.' });
+    return;
+  }
 
-      // Remove headers that might confuse Better Auth's host/base URL check
-      proxyReq.removeHeader('x-forwarded-host');
-      proxyReq.removeHeader('x-forwarded-proto');
-      proxyReq.removeHeader('x-forwarded-port');
-      
-      console.log(`[PROXY REQ] ${req.method} ${req.url} -> Target Host: ${proxyReq.getHeader('host')}, Origin: ${proxyReq.getHeader('origin')}`);
-    },
-    proxyRes: (proxyRes: any, req: any) => {
-      console.log(`[PROXY RES] ${req.method} ${req.url} -> Status: ${proxyRes.statusCode}`);
-      const sc = proxyRes.headers['set-cookie'];
-      if (sc) {
-        const cookies = Array.isArray(sc) ? sc : [sc];
-        proxyRes.headers['set-cookie'] = cookies.map(c => {
-          return c.replace(/Domain=[^;]+;?\s*/i, '') + '; Secure; SameSite=Lax';
-        });
-      }
-    },
-    error: (err: any, req: any) => {
-      console.error(`[PROXY ERROR] ${req.method} ${req.url} ->`, err);
+  // Build the target URL: /neondb/auth/<rest of path>
+  const cleanPath = req.path === '/' ? '' : req.path.replace(/\/$/, '');
+  const queryString = req.url.includes('?') ? '?' + req.url.split('?').slice(1).join('?') : '';
+  const targetUrl = `${neonBase}/neondb/auth${cleanPath}${queryString}`;
+  console.log(`[AUTH PROXY] ${req.method} ${req.path} -> ${targetUrl}`);
+
+  // Build forwarded headers — strip hop-by-hop and confusing proxy headers
+  const skipRequestHeaders = new Set(['host', 'connection', 'x-forwarded-host', 'x-forwarded-port', 'x-forwarded-proto', 'transfer-encoding']);
+  const forwardHeaders: Record<string, string> = {};
+  for (const [key, value] of Object.entries(req.headers)) {
+    if (typeof value === 'string' && !skipRequestHeaders.has(key.toLowerCase())) {
+      forwardHeaders[key] = value;
     }
   }
-}));
+  // Rewrite Origin to the Neon target so Better Auth CSRF check passes
+  forwardHeaders['origin'] = neonBase;
+
+  let body: string | undefined;
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    // express.json() hasn't run yet at this mount point, so we read the raw body
+    body = await new Promise<string>((resolve, reject) => {
+      let data = '';
+      req.on('data', (chunk: Buffer) => { data += chunk.toString(); });
+      req.on('end', () => resolve(data));
+      req.on('error', reject);
+    });
+    if (body) {
+      forwardHeaders['content-type'] = forwardHeaders['content-type'] || 'application/json';
+      forwardHeaders['content-length'] = Buffer.byteLength(body).toString();
+    }
+  }
+
+  try {
+    const upstream = await fetch(targetUrl, {
+      method: req.method,
+      headers: forwardHeaders,
+      body: body || undefined,
+    });
+
+    // Forward response status
+    res.status(upstream.status);
+
+    // Forward safe response headers
+    const skipResponseHeaders = new Set(['transfer-encoding', 'connection', 'content-encoding', 'set-cookie']);
+    upstream.headers.forEach((value: string, key: string) => {
+      if (!skipResponseHeaders.has(key.toLowerCase())) {
+        res.setHeader(key, value);
+      }
+    });
+
+    // Rewrite Set-Cookie headers: strip Domain, ensure Secure + SameSite=Lax
+    const rawCookies: string[] = (upstream.headers as any).getSetCookie?.() ?? [];
+    rawCookies.forEach((cookie: string) => {
+      const rewritten = cookie.replace(/Domain=[^;]+;?\s*/gi, '') + '; Secure; SameSite=Lax';
+      res.append('Set-Cookie', rewritten);
+    });
+
+    const responseBody = await upstream.text();
+    res.send(responseBody);
+  } catch (err) {
+    console.error('[AUTH PROXY ERROR]', err);
+    res.status(502).json({ error: 'Auth service unreachable. Check VITE_NEON_AUTH_URL.' });
+  }
+});
 
 // 2. Other middleware
 app.use(cors((req, callback) => {
