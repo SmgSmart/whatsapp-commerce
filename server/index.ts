@@ -84,7 +84,7 @@ app.use(cors({
 app.use(express.json({ limit: '1mb' }));
 
 // Production: Serve static frontend files
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
   const distPath = path.resolve(process.cwd(), 'dist');
   app.use(express.static(distPath));
   
@@ -540,6 +540,10 @@ app.use((error: unknown, _req: express.Request, res: express.Response, _next: ex
   res.status(500).json({ error: error instanceof Error ? error.message : 'Unexpected server error' });
 });
 
-app.listen(env.port, '0.0.0.0', () => {
-  console.log(`API server listening on http://0.0.0.0:${env.port}`);
-});
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(env.port, '0.0.0.0', () => {
+    console.log(`API server listening on http://0.0.0.0:${env.port}`);
+  });
+}
+
+export default app;
