@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
-import { env } from './env';
+import { env } from './env.js';
 import { createAuthClient } from '@neondatabase/auth';
 
 export interface AuthedRequest extends Request {

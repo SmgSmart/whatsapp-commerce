@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import { requireEnv } from './env';
+import { requireEnv } from './env.js';
 
 export function createUploadSignature(folder: string) {
   const cloudName = requireEnv('cloudinaryCloudName');

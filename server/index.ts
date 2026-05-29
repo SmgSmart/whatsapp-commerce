@@ -2,10 +2,10 @@ import express from 'express';
 import path from 'node:path';
 import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { createUploadSignature } from './cloudinary';
-import { login, getSession, requireUser, type AuthedRequest } from './auth';
-import { env } from './env';
-import { query } from './db';
+import { createUploadSignature } from './cloudinary.js';
+import { login, getSession, requireUser, type AuthedRequest } from './auth.js';
+import { env } from './env.js';
+import { query } from './db.js';
 
 const app = express();
 app.set('trust proxy', true);
