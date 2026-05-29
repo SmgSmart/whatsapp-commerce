@@ -67,19 +67,27 @@ app.use('/api/auth', createProxyMiddleware({
 }));
 
 // 2. Other middleware
-app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl)
-    if (!origin) return callback(null, true);
-    
-    // Allow any ngrok or render origin or listed origins
-    if (allowedOrigins.includes(origin) || origin.endsWith('.ngrok-free.app') || origin.endsWith('.onrender.com')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true 
+app.use(cors((req, callback) => {
+  const origin = req.header('Origin');
+  const host = req.get('host');
+  
+  // Determine if it is a same-origin request
+  const isSameOrigin = origin && (
+    origin === `http://${host}` ||
+    origin === `https://${host}`
+  );
+
+  const allowed = !origin || 
+    allowedOrigins.includes(origin) ||
+    isSameOrigin ||
+    origin.endsWith('.ngrok-free.app') ||
+    origin.endsWith('.onrender.com') ||
+    origin.endsWith('.vercel.app');
+
+  callback(null, {
+    origin: allowed,
+    credentials: true
+  });
 }));
 app.use(express.json({ limit: '1mb' }));
 
