@@ -19,16 +19,16 @@ export function Hero({ business }: HeroProps) {
           <div className="absolute inset-0 bg-black/20" />
         </div>
       )}
-      <div className="px-4 py-6 sm:px-6 sm:py-8 bg-gradient-to-b from-blue-50 to-white">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+      <div className="px-4 py-6 sm:px-6 sm:py-8 bg-gradient-to-b from-brand-steel/15 to-transparent border-b border-brand-steel/10">
+        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
           {business.business_name}
         </h2>
         {business.tagline && (
-          <p className="text-gray-600 text-sm sm:text-base mb-4">
+          <p className="text-brand-cream text-sm sm:text-base font-semibold mb-4">
             {business.tagline}
           </p>
         )}
-        <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
+        <p className="text-brand-slate text-sm sm:text-base leading-relaxed">
           Discover our quality products. Order now via WhatsApp for quick and easy service.
         </p>
       </div>

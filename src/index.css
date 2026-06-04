@@ -4,17 +4,14 @@
 
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #071739;
+  color: #CDD5DB;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Outfit', sans-serif;
-}
-
-/* Ensure all input, textarea, and select text is dark and visible on light form backgrounds */
-input, textarea, select {
-  color: #1f2937 !important; /* text-gray-800 */
 }
 
 /* Custom premium scrollbar */
@@ -26,11 +23,11 @@ input, textarea, select {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.2);
+  background: rgba(75, 99, 130, 0.3); /* brand-steel */
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.4);
+  background: rgba(227, 195, 157, 0.5); /* brand-cream */
 }
 
 @keyframes pulse-slow {

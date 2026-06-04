@@ -69,25 +69,25 @@ export function OrderModal({ items, business, isOpen, onClose, onSuccess }: Orde
   if (!isOpen || items.length === 0) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50">
-      <div className="bg-white w-full max-w-md rounded-t-2xl sm:rounded-lg p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-brand-dark/70 backdrop-blur-xs">
+      <div className="bg-[#071739]/95 backdrop-blur-md w-full max-w-md rounded-t-2xl sm:rounded-lg p-6 sm:p-8 border border-brand-steel/20 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">Checkout</h2>
+          <h2 className="text-xl font-bold text-white">Checkout</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-brand-steel/20 text-white rounded-lg transition-colors"
           >
             <X size={24} />
           </button>
         </div>
 
-        <div className="bg-blue-50 p-4 rounded-lg mb-6 max-h-48 overflow-y-auto">
-          <p className="text-sm font-semibold text-gray-700 mb-3">Order Items:</p>
+        <div className="bg-brand-dark/60 border border-brand-steel/20 p-4 rounded-lg mb-6 max-h-48 overflow-y-auto">
+          <p className="text-sm font-semibold text-brand-slate mb-3">Order Items:</p>
           <div className="space-y-2">
             {items.map((item) => (
               <div key={item.id} className="flex justify-between text-sm">
-                <span className="text-gray-700">{item.name} × {item.cartQuantity}</span>
-                <span className="font-semibold text-gray-900">
+                <span className="text-brand-slate">{item.name} × {item.cartQuantity}</span>
+                <span className="font-semibold text-brand-cream">
                   GHS {money(toAmount(item.price) * item.cartQuantity)}
                 </span>
               </div>
@@ -97,7 +97,7 @@ export function OrderModal({ items, business, isOpen, onClose, onSuccess }: Orde
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-brand-slate mb-2">
               Your Name *
             </label>
             <input
@@ -106,13 +106,13 @@ export function OrderModal({ items, business, isOpen, onClose, onSuccess }: Orde
               value={formData.name}
               onChange={handleInputChange}
               placeholder="Enter your full name"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900"
+              className="w-full px-4 py-2 bg-brand-dark border border-brand-steel/40 text-white placeholder-brand-slate/50 rounded-lg focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-brand-slate mb-2">
               Delivery Location *
             </label>
             <input
@@ -121,13 +121,13 @@ export function OrderModal({ items, business, isOpen, onClose, onSuccess }: Orde
               value={formData.location}
               onChange={handleInputChange}
               placeholder="e.g., Accra, Kumasi, Tema"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900"
+              className="w-full px-4 py-2 bg-brand-dark border border-brand-steel/40 text-white placeholder-brand-slate/50 rounded-lg focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-brand-slate mb-2">
               Special Requests or Notes
             </label>
             <textarea
@@ -136,27 +136,27 @@ export function OrderModal({ items, business, isOpen, onClose, onSuccess }: Orde
               onChange={handleInputChange}
               placeholder="Any special requests or preferences..."
               rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-900 resize-none"
+              className="w-full px-4 py-2 bg-brand-dark border border-brand-steel/40 text-white placeholder-brand-slate/50 rounded-lg focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none resize-none"
             />
           </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
-            <p className="text-sm text-gray-600">Total Amount</p>
-            <p className="text-3xl font-bold text-green-600">
+          <div className="bg-brand-dark/50 p-4 rounded-lg border border-brand-steel/20">
+            <p className="text-sm text-brand-slate">Total Amount</p>
+            <p className="text-3xl font-bold text-brand-cream">
               GHS {totalPrice.toFixed(2)}
             </p>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition-colors"
+            className="w-full bg-gradient-to-r from-brand-bronze to-brand-cream text-brand-dark font-black py-3 rounded-lg transition-all hover:opacity-90"
           >
             Send Order via WhatsApp
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="w-full bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium py-2 rounded-lg transition-colors"
+            className="w-full bg-brand-steel/20 hover:bg-brand-steel/35 text-white font-semibold py-2 rounded-lg transition-colors"
           >
             Cancel
           </button>

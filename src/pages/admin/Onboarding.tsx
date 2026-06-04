@@ -41,20 +41,20 @@ export function Onboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-xl bg-white rounded-3xl shadow-xl shadow-indigo-100/50 p-8 md:p-12 border border-gray-100">
+    <div className="min-h-screen bg-brand-dark flex items-center justify-center p-4">
+      <div className="w-full max-w-xl bg-brand-steel/10 rounded-3xl shadow-2xl p-8 md:p-12 border border-brand-steel/15 backdrop-blur-md">
         <div className="flex items-center gap-3 mb-8">
-          <div className="bg-indigo-600 p-2 rounded-xl">
-            <Rocket className="w-6 h-6 text-white" />
+          <div className="bg-brand-cream/10 p-2.5 rounded-xl">
+            <Rocket className="w-6 h-6 text-brand-cream" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Let's build your store</h1>
-            <p className="text-gray-500">You're just 60 seconds away from your first sale.</p>
+            <h1 className="text-2xl font-bold text-white">Let's build your store</h1>
+            <p className="text-brand-slate mt-1">You're just 60 seconds away from your first sale.</p>
           </div>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl text-sm border border-red-100">
+          <div className="mb-6 p-4 bg-rose-500/10 text-rose-400 rounded-xl text-sm border border-rose-500/20">
             {error}
           </div>
         )}
@@ -63,36 +63,36 @@ export function Onboarding() {
           {/* Step 1: Business Name */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-brand-slate mb-2">
                 What's your business called?
               </label>
               <div className="relative">
-                <Store className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Store className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-slate/60" />
                 <input
                   type="text"
                   required
                   value={formData.businessName}
                   onChange={(e) => handleSlugChange(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-lg"
+                  className="w-full pl-12 pr-4 py-3 bg-brand-dark/45 border border-brand-steel/20 rounded-2xl focus:ring-2 focus:ring-brand-cream focus:border-transparent text-white outline-none transition-all text-lg"
                   placeholder="e.g. Ama's Boutique"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-brand-slate mb-2">
                 Your store URL
               </label>
               <div className="relative">
-                <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <div className="flex items-center w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl">
-                  <span className="text-gray-400 text-sm mr-1">/store/</span>
+                <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-slate/60" />
+                <div className="flex items-center w-full pl-12 pr-4 py-3 bg-brand-dark/45 border border-brand-steel/20 rounded-2xl focus-within:ring-2 focus-within:ring-brand-cream focus-within:border-transparent transition-all">
+                  <span className="text-brand-slate/70 text-sm mr-1">/store/</span>
                   <input
                     type="text"
                     required
                     value={formData.slug}
                     onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                    className="flex-1 bg-transparent outline-none text-indigo-600 font-medium"
+                    className="flex-1 bg-transparent outline-none text-brand-cream font-medium"
                     placeholder="amas-boutique"
                   />
                 </div>
@@ -100,20 +100,20 @@ export function Onboarding() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-brand-slate mb-2">
                 WhatsApp Number (for orders)
               </label>
               <div className="relative">
-                <MessageSquare className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <MessageSquare className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-slate/60" />
                 <input
                   type="tel"
                   required
                   value={formData.whatsappNumber}
                   onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-lg"
+                  className="w-full pl-12 pr-4 py-3 bg-brand-dark/45 border border-brand-steel/20 rounded-2xl focus:ring-2 focus:ring-brand-cream focus:border-transparent text-white outline-none transition-all text-lg"
                   placeholder="233240000000"
                 />
-                <p className="mt-2 text-xs text-gray-400 italic">
+                <p className="mt-2 text-xs text-brand-slate/60 italic">
                   Include your country code (e.g. 233 for Ghana).
                 </p>
               </div>
@@ -123,7 +123,7 @@ export function Onboarding() {
           <button
             type="submit"
             disabled={loading || !formData.businessName || !formData.whatsappNumber}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-brand-cream hover:bg-white text-brand-dark font-bold py-4 rounded-2xl transition-all shadow-lg shadow-brand-cream/5 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99]"
           >
             {loading ? (
               'Creating your store...'

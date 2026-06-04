@@ -48,7 +48,7 @@ export function Store() {
     const isLoading = productsLoading || categoriesLoading;
 
     return (
-        <div className="min-h-screen bg-white flex flex-col">
+        <div className="min-h-screen bg-brand-dark text-brand-gray flex flex-col">
             <Navbar
                 business={business}
                 cartItemsCount={getTotalItems()}

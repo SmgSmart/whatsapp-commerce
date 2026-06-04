@@ -31,25 +31,25 @@ export function AuthView() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-brand-dark flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl shadow-lg mb-4">
-            <Store className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-brand-bronze to-brand-cream rounded-2xl shadow-lg shadow-brand-cream/15 mb-4">
+            <Store className="w-8 h-8 text-brand-dark" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-white">
             {isSignUp ? 'Create your store' : 'Welcome back'}
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-brand-slate mt-2">
             {isSignUp 
               ? 'Join hundreds of sellers on WhatsApp' 
               : 'Sign in to manage your products'}
           </p>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-xl shadow-indigo-100/50 p-8 border border-gray-100">
+        <div className="bg-[#071739]/60 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-brand-steel/20">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm">
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl text-sm">
               {error}
             </div>
           )}
@@ -61,7 +61,7 @@ export function AuthView() {
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="flex items-center justify-center gap-3 w-full px-4 py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-semibold text-gray-700 shadow-sm disabled:opacity-50"
+                className="flex items-center justify-center gap-3 w-full px-4 py-3 border border-brand-steel/30 bg-brand-dark rounded-xl hover:bg-brand-steel/20 transition-all font-semibold text-white shadow-sm disabled:opacity-50"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
@@ -87,10 +87,10 @@ export function AuthView() {
 
             <div className="relative mb-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-100"></div>
+                <div className="w-full border-t border-brand-steel/15"></div>
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-gray-400 font-medium tracking-wider">
+                <span className="bg-[#071739] px-3 text-brand-slate font-medium tracking-wider">
                   Or continue with email
                 </span>
               </div>
@@ -98,17 +98,17 @@ export function AuthView() {
 
             {isSignUp && (
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label className="block text-sm font-semibold text-brand-slate mb-1.5">
                   Full Name
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-slate/60" />
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                    className="w-full pl-10 pr-4 py-3 bg-brand-dark border border-brand-steel/40 text-white placeholder-brand-slate/40 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all"
                     placeholder="John Doe"
                   />
                 </div>
@@ -116,34 +116,34 @@ export function AuthView() {
             )}
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-brand-slate mb-1.5">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-slate/60" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-brand-dark border border-brand-steel/40 text-white placeholder-brand-slate/40 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all"
                   placeholder="admin@example.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-brand-slate mb-1.5">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-slate/60" />
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-brand-dark border border-brand-steel/40 text-white placeholder-brand-slate/40 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all"
                   placeholder="••••••••"
                 />
               </div>
@@ -152,7 +152,7 @@ export function AuthView() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 group"
+              className="w-full bg-gradient-to-r from-brand-bronze to-brand-cream text-brand-dark font-black py-3 rounded-xl transition-all flex items-center justify-center gap-2 group shadow-md"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -165,10 +165,10 @@ export function AuthView() {
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-gray-50 text-center">
+          <div className="mt-8 pt-6 border-t border-brand-steel/15 text-center">
             <button
               onClick={() => setIsSignUp(!isSignUp)}
-              className="text-indigo-600 font-semibold hover:text-indigo-700 transition-colors"
+              className="text-brand-cream font-semibold hover:underline transition-colors"
             >
               {isSignUp 
                 ? 'Already have an account? Sign in' 
@@ -179,7 +179,7 @@ export function AuthView() {
 
         <button
           onClick={() => navigate('/')}
-          className="mt-8 text-gray-500 hover:text-gray-700 font-medium flex items-center justify-center gap-2 mx-auto transition-colors"
+          className="mt-8 text-brand-slate hover:text-brand-cream font-medium flex items-center justify-center gap-2 mx-auto transition-colors"
         >
           <ArrowRight className="w-4 h-4 rotate-180" />
           Back to Directory

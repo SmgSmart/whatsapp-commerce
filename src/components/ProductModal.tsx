@@ -22,17 +22,17 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 overflow-y-auto">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl overflow-hidden relative flex flex-col md:flex-row">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/70 backdrop-blur-sm overflow-y-auto">
+            <div className="bg-[#071739]/95 backdrop-blur-md rounded-2xl border border-brand-steel/20 shadow-2xl w-full max-w-3xl overflow-hidden relative flex flex-col md:flex-row">
                 <button
                     onClick={onClose}
-                    className="absolute right-4 top-4 p-2 bg-white/80 hover:bg-gray-100 rounded-full transition-colors z-10 text-gray-700"
+                    className="absolute right-4 top-4 p-2 bg-brand-dark/80 hover:bg-brand-steel/30 rounded-full transition-colors z-10 text-white border border-brand-steel/10"
                     aria-label="Close modal"
                 >
                     <X size={24} />
                 </button>
 
-                <div className="w-full md:w-1/2 relative min-h-[300px] md:min-h-[400px] bg-gray-100 flex-shrink-0">
+                <div className="w-full md:w-1/2 relative min-h-[300px] md:min-h-[400px] bg-brand-dark flex-shrink-0">
                     {product.image_url ? (
                         <img
                             src={product.image_url}
@@ -40,44 +40,44 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
                             className="absolute inset-0 w-full h-full object-cover"
                         />
                     ) : (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
-                            <ShoppingCart size={64} className="text-gray-400" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-brand-steel/20 to-brand-dark">
+                            <ShoppingCart size={64} className="text-brand-slate/40" />
                         </div>
                     )}
                     {!product.in_stock && (
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                            <span className="text-white font-bold text-2xl tracking-wider">OUT OF STOCK</span>
+                        <div className="absolute inset-0 bg-brand-dark/80 flex items-center justify-center">
+                            <span className="text-brand-cream font-black text-2xl tracking-wider">OUT OF STOCK</span>
                         </div>
                     )}
                 </div>
 
                 <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col">
                     <div className="mb-4">
-                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
                             {product.name}
                         </h2>
-                        <div className="text-3xl font-bold text-green-600">
+                        <div className="text-3xl font-bold text-brand-cream">
                             GHS {money(product.price)}
                         </div>
                     </div>
 
-                    <div className="prose prose-sm text-gray-600 mb-8 flex-grow">
+                    <div className="prose prose-sm text-brand-slate mb-8 flex-grow">
                         {product.description ? (
-                            <p className="whitespace-pre-wrap">{product.description}</p>
+                            <p className="whitespace-pre-wrap leading-relaxed">{product.description}</p>
                         ) : (
-                            <p className="italic text-gray-400">No description available for this product.</p>
+                            <p className="italic text-brand-slate/50">No description available for this product.</p>
                         )}
                     </div>
 
                     <div className="mt-auto space-y-6">
-                        <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-2">
+                        <div className="bg-brand-dark/50 rounded-xl p-4 border border-brand-steel/20">
+                            <label htmlFor="quantity" className="block text-sm font-medium text-brand-slate mb-2">
                                 Quantity
                             </label>
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                    className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors shadow-sm"
+                                    className="w-10 h-10 rounded-full bg-brand-steel/20 border border-brand-steel/30 flex items-center justify-center text-white hover:bg-brand-steel/40 transition-colors shadow-sm"
                                     aria-label="Decrease quantity"
                                     type="button"
                                 >
@@ -88,12 +88,12 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
                                     id="quantity"
                                     value={quantity}
                                     onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                                    className="w-16 h-10 text-center text-lg font-semibold border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-sm"
+                                    className="w-16 h-10 text-center text-lg font-semibold bg-brand-dark border border-brand-steel/40 text-white rounded-lg focus:ring-2 focus:ring-brand-cream outline-none shadow-sm"
                                     min="1"
                                 />
                                 <button
                                     onClick={() => setQuantity(quantity + 1)}
-                                    className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors shadow-sm"
+                                    className="w-10 h-10 rounded-full bg-brand-steel/20 border border-brand-steel/30 flex items-center justify-center text-white hover:bg-brand-steel/40 transition-colors shadow-sm"
                                     aria-label="Increase quantity"
                                     type="button"
                                 >
@@ -105,7 +105,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
                         <button
                             onClick={handleAddClick}
                             disabled={!product.in_stock}
-                            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
+                            className="w-full bg-gradient-to-r from-brand-bronze to-brand-cream hover:opacity-90 disabled:from-brand-steel/40 disabled:to-brand-steel/25 disabled:cursor-not-allowed text-brand-dark font-black py-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm"
                         >
                             <Plus size={24} />
                             <span className="text-lg">Add to Cart - GHS {money(toAmount(product.price) * quantity)}</span>

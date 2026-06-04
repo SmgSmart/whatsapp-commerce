@@ -82,59 +82,65 @@ export function BusinessSettings() {
     };
 
     if (loading) {
-        return <div className="p-8">Loading settings...</div>;
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-brand-dark">
+                <div className="relative">
+                    <div className="animate-spin rounded-full h-12 w-12 border-2 border-brand-steel/20 border-b-brand-cream"></div>
+                </div>
+            </div>
+        );
     }
 
     return (
         <div className="p-6 md:p-8 max-w-4xl mx-auto">
             <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900">Store Settings</h1>
-                <p className="text-gray-500 mt-1">Manage your business information and appearance</p>
+                <h1 className="text-2xl font-bold text-white">Store Settings</h1>
+                <p className="text-brand-slate mt-1">Manage your business information and appearance</p>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-brand-steel/10 rounded-3xl border border-brand-steel/15 overflow-hidden backdrop-blur-md">
                 <form onSubmit={handleSave} className="p-6 md:p-8">
 
                     <div className="space-y-8">
                         {/* Basic Info Section */}
                         <div>
-                            <h2 className="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">Basic Information</h2>
+                            <h2 className="text-lg font-bold text-white mb-4 pb-2 border-b border-brand-steel/15">Basic Information</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Business Name *</label>
+                                    <label className="block text-sm font-semibold text-brand-slate mb-1.5">Business Name *</label>
                                     <input
                                         type="text"
                                         name="business_name"
                                         required
                                         value={formData.business_name}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
                                         placeholder="My Awesome Store"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">WhatsApp Number *</label>
+                                    <label className="block text-sm font-semibold text-brand-slate mb-1.5">WhatsApp Number *</label>
                                     <input
                                         type="text"
                                         name="whatsapp_number"
                                         required
                                         value={formData.whatsapp_number}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
                                         placeholder="+1234567890"
                                     />
-                                    <p className="text-xs text-gray-500 mt-1">Include country code. Used for receiving orders.</p>
+                                    <p className="text-xs text-brand-slate/75 mt-1.5">Include country code. Used for receiving orders.</p>
                                 </div>
 
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Tagline / Slogan</label>
+                                    <label className="block text-sm font-semibold text-brand-slate mb-1.5">Tagline / Slogan</label>
                                     <input
                                         type="text"
                                         name="tagline"
                                         value={formData.tagline}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
                                         placeholder="The best products in town!"
                                     />
                                 </div>
@@ -143,10 +149,10 @@ export function BusinessSettings() {
 
                         {/* Branding Section */}
                         <div>
-                            <h2 className="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">Branding</h2>
+                            <h2 className="text-lg font-bold text-white mb-4 pb-2 border-b border-brand-steel/15">Branding</h2>
                             <div className="space-y-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Store Logo</label>
+                                    <label className="block text-sm font-semibold text-brand-slate mb-1.5">Store Logo</label>
                                     <div className="relative">
                                         <input
                                             type="file"
@@ -157,26 +163,26 @@ export function BusinessSettings() {
                                         />
                                         <label
                                             htmlFor="logo-upload"
-                                            className="w-full px-4 py-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 cursor-pointer flex items-center justify-center gap-2 border-2 border-dashed border-blue-200 font-semibold transition-all"
+                                            className="w-full px-4 py-3 bg-brand-steel/10 text-brand-cream rounded-xl hover:bg-brand-steel/20 cursor-pointer flex items-center justify-center gap-2 border-2 border-dashed border-brand-steel/20 font-bold transition-all"
                                         >
                                             <Upload size={20} />
-                                            {uploading.logo ? 'Uploading...' : 'Click to Upload Store Logo'}
+                                            {uploading.logo ? 'Uploading...' : 'Upload Logo'}
                                         </label>
                                     </div>
                                     {formData.logo_url && (
-                                        <div className="mt-2 w-20 h-20 rounded-lg border border-gray-200 overflow-hidden bg-gray-50 relative">
+                                        <div className="mt-4 w-20 h-20 rounded-xl border border-brand-steel/20 overflow-hidden bg-brand-dark/45 relative flex items-center justify-center">
                                             {uploading.logo && (
-                                                <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
-                                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                                                <div className="absolute inset-0 bg-[#071739]/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
+                                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-cream"></div>
                                                 </div>
                                             )}
-                                            <img src={formData.logo_url} alt="Logo" className="w-full h-full object-contain" />
+                                            <img src={formData.logo_url} alt="Logo" className="w-full h-full object-contain p-1" />
                                         </div>
                                     )}
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Hero Banner Image</label>
+                                    <label className="block text-sm font-semibold text-brand-slate mb-1.5">Hero Banner Image</label>
                                     <div className="relative">
                                         <input
                                             type="file"
@@ -187,18 +193,18 @@ export function BusinessSettings() {
                                         />
                                         <label
                                             htmlFor="banner-upload"
-                                            className="w-full px-4 py-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 cursor-pointer flex items-center justify-center gap-2 border-2 border-dashed border-blue-200 font-semibold transition-all"
+                                            className="w-full px-4 py-3 bg-brand-steel/10 text-brand-cream rounded-xl hover:bg-brand-steel/20 cursor-pointer flex items-center justify-center gap-2 border-2 border-dashed border-brand-steel/20 font-bold transition-all"
                                         >
                                             <Upload size={20} />
-                                            {uploading.banner ? 'Uploading...' : 'Click to Upload Hero Banner'}
+                                            {uploading.banner ? 'Uploading...' : 'Upload Hero Banner'}
                                         </label>
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-2">This image appears at the top of your store home page.</p>
+                                    <p className="text-xs text-brand-slate/75 mt-2">This image appears at the top of your store home page.</p>
                                     {formData.hero_banner_url && (
-                                        <div className="mt-2 w-full h-32 rounded-lg border border-gray-200 overflow-hidden bg-gray-50 relative">
+                                        <div className="mt-4 w-full h-36 rounded-xl border border-brand-steel/20 overflow-hidden bg-brand-dark/45 relative">
                                             {uploading.banner && (
-                                                <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
-                                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                                                <div className="absolute inset-0 bg-[#071739]/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
+                                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-cream"></div>
                                                 </div>
                                             )}
                                             <img src={formData.hero_banner_url} alt="Banner" className="w-full h-full object-cover" />
@@ -210,40 +216,40 @@ export function BusinessSettings() {
 
                         {/* Contact & Social Section */}
                         <div>
-                            <h2 className="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">Location & Social Links</h2>
+                            <h2 className="text-lg font-bold text-white mb-4 pb-2 border-b border-brand-steel/15">Location & Social Links</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Store Location</label>
+                                    <label className="block text-sm font-semibold text-brand-slate mb-1.5">Store Location</label>
                                     <input
                                         type="text"
                                         name="location"
                                         value={formData.location}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
                                         placeholder="Accra, Ghana"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Facebook Page URL</label>
+                                    <label className="block text-sm font-semibold text-brand-slate mb-1.5">Facebook Page URL</label>
                                     <input
                                         type="url"
                                         name="facebook_url"
                                         value={formData.facebook_url}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
                                         placeholder="https://facebook.com/yourstore"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Instagram Profile URL</label>
+                                    <label className="block text-sm font-semibold text-brand-slate mb-1.5">Instagram Profile URL</label>
                                     <input
                                         type="url"
                                         name="instagram_url"
                                         value={formData.instagram_url}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
                                         placeholder="https://instagram.com/yourstore"
                                     />
                                 </div>
@@ -251,13 +257,13 @@ export function BusinessSettings() {
                         </div>
                     </div>
 
-                    <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end">
+                    <div className="mt-8 pt-6 border-t border-brand-steel/15 flex justify-end">
                         <button
                             type="submit"
                             disabled={saving}
-                            className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-6 py-2.5 rounded-lg font-medium flex items-center gap-2 transition-colors shadow-sm cursor-pointer"
+                            className="bg-brand-cream hover:bg-white disabled:bg-brand-cream/50 text-brand-dark px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-brand-cream/5 hover:scale-[1.02] active:scale-[0.98]"
                         >
-                            <Save size={20} />
+                            <Save size={20} className="text-brand-dark" />
                             {saving ? 'Saving...' : 'Save Changes'}
                         </button>
                     </div>

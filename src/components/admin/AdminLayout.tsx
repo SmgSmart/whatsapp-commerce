@@ -64,8 +64,10 @@ export function AdminLayout() {
 
     if (loading || checkingStore) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="min-h-screen flex items-center justify-center bg-brand-dark">
+                <div className="relative">
+                    <div className="animate-spin rounded-full h-12 w-12 border-2 border-brand-steel/20 border-b-brand-cream"></div>
+                </div>
             </div>
         );
     }
@@ -83,12 +85,12 @@ export function AdminLayout() {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-100 flex">
+        <div className="min-h-screen bg-brand-dark flex text-brand-gray">
             {/* Sidebar */}
-            <aside className="w-64 bg-white border-r border-gray-200 flex flex-col hidden md:flex">
-                <div className="h-16 flex items-center px-6 border-b border-gray-200">
-                    <Store className="w-6 h-6 text-blue-600 mr-2" />
-                    <span className="text-xl font-bold text-gray-900">Admin</span>
+            <aside className="w-64 bg-[#071739]/95 border-r border-brand-steel/20 flex flex-col hidden md:flex backdrop-blur-md">
+                <div className="h-16 flex items-center px-6 border-b border-brand-steel/15 bg-brand-dark/20">
+                    <Store className="w-6 h-6 text-brand-cream mr-2" />
+                    <span className="text-xl font-bold text-white">Admin</span>
                 </div>
 
                 <nav className="flex-1 px-4 py-4 space-y-1">
@@ -98,13 +100,13 @@ export function AdminLayout() {
                             <Link
                                 key={item.name}
                                 to={item.href}
-                                className={`flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${isActive
-                                    ? 'bg-blue-50 text-blue-700'
-                                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                                className={`flex items-center px-3 py-2.5 text-sm font-semibold rounded-lg transition-colors ${isActive
+                                    ? 'bg-brand-cream text-brand-dark shadow-sm shadow-brand-cream/10'
+                                    : 'text-brand-slate hover:bg-brand-steel/20 hover:text-white'
                                     }`}
                             >
                                 <item.icon
-                                    className={`flex-shrink-0 -ml-1 mr-3 h-5 w-5 ${isActive ? 'text-blue-700' : 'text-gray-400'
+                                    className={`flex-shrink-0 -ml-1 mr-3 h-5 w-5 ${isActive ? 'text-brand-dark' : 'text-brand-slate'
                                         }`}
                                 />
                                 <span className="truncate">{item.name}</span>
@@ -112,43 +114,43 @@ export function AdminLayout() {
                         );
                     })}
 
-                    <div className="pt-4 mt-4 border-t border-gray-100">
+                    <div className="pt-4 mt-4 border-t border-brand-steel/15">
                         <Link
                             to={storeSlug ? `/store/${storeSlug}` : '/'}
-                            className="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                            className="flex items-center px-3 py-2.5 text-sm font-semibold rounded-lg text-brand-slate hover:bg-brand-steel/20 hover:text-white transition-colors"
                         >
-                            <Eye className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400" />
+                            <Eye className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-brand-slate" />
                             <span>View Store</span>
                         </Link>
                     </div>
                 </nav>
 
-                <div className="p-4 border-t border-gray-200">
+                <div className="p-4 border-t border-brand-steel/15">
                     <button
                         type="button"
                         onClick={handleSignOut}
-                        className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer"
+                        className="flex items-center w-full px-3 py-2 text-sm font-semibold text-brand-slate rounded-lg hover:bg-red-500/10 hover:text-red-400 transition-colors cursor-pointer"
                     >
-                        <LogOut className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-gray-400 group-hover:text-red-500" />
+                        <LogOut className="flex-shrink-0 -ml-1 mr-3 h-5 w-5 text-brand-slate hover:text-red-400" />
                         Sign Out
                     </button>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-gray-100 pb-[90px] md:pb-0">
+            <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-brand-dark pb-[90px] md:pb-0">
                 {/* Mobile Header */}
-                <div className="md:hidden flex items-center justify-between bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-20">
+                <div className="md:hidden flex items-center justify-between bg-[#071739]/95 border-b border-brand-steel/20 px-4 py-3 sticky top-0 z-20 backdrop-blur-md">
                     <div className="flex items-center">
-                        <Store className="w-6 h-6 text-blue-600 mr-2" />
-                        <span className="text-lg font-bold">Admin</span>
+                        <Store className="w-6 h-6 text-brand-cream mr-2" />
+                        <span className="text-lg font-bold text-white">Admin</span>
                     </div>
 
                     <Link
                         to={storeSlug ? `/store/${storeSlug}` : '/'}
-                        className="flex items-center gap-1.5 text-sm font-medium text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-100 transition-colors"
+                        className="flex items-center gap-1.5 text-sm font-semibold text-white bg-brand-steel/25 px-3 py-1.5 rounded-full border border-brand-steel/30 hover:bg-brand-steel/40 transition-colors"
                     >
-                        <Eye className="w-4 h-4" />
+                        <Eye className="w-4 h-4 text-brand-cream" />
                         <span>View Store</span>
                     </Link>
                 </div>
@@ -159,7 +161,7 @@ export function AdminLayout() {
 
                 {/* Mobile Navigation Bar */}
                 <div
-                    className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-between items-center px-2 pt-2 pb-6 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]"
+                    className="md:hidden fixed bottom-0 left-0 right-0 bg-[#071739]/95 border-t border-brand-steel/20 flex justify-between items-center px-2 pt-2 pb-6 z-50 shadow-[0_-4px_12px_rgba(0,0,0,0.4)] backdrop-blur-md"
                     style={{ paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}
                 >
                     {navigation.map((item) => {
@@ -168,21 +170,21 @@ export function AdminLayout() {
                             <Link
                                 key={item.name}
                                 to={item.href}
-                                className={`flex flex-col items-center p-2 rounded-lg min-w-[64px] ${isActive ? 'text-blue-600' : 'text-gray-500 hover:text-gray-900'
+                                className={`flex flex-col items-center p-2 rounded-lg min-w-[64px] ${isActive ? 'text-brand-cream font-bold' : 'text-brand-slate hover:text-white'
                                     }`}
                             >
-                                <item.icon className={`h-6 w-6 mb-1 ${isActive ? 'text-blue-600' : ''}`} />
-                                <span className="text-[10px] font-medium text-center leading-none">{item.name}</span>
+                                <item.icon className={`h-6 w-6 mb-1 ${isActive ? 'text-brand-cream' : ''}`} />
+                                <span className="text-[10px] font-semibold text-center leading-none">{item.name}</span>
                             </Link>
                         );
                     })}
                     <button
                         type="button"
                         onClick={handleSignOut}
-                        className="flex flex-col items-center p-2 rounded-lg min-w-[64px] text-red-500 hover:text-red-700 cursor-pointer active:bg-red-50"
+                        className="flex flex-col items-center p-2 rounded-lg min-w-[64px] text-red-400 hover:text-red-300 cursor-pointer active:bg-red-500/10"
                     >
-                        <LogOut className="h-6 w-6 mb-1 text-red-500" />
-                        <span className="text-[10px] font-medium text-center leading-none">Sign Out</span>
+                        <LogOut className="h-6 w-6 mb-1 text-red-400" />
+                        <span className="text-[10px] font-semibold text-center leading-none">Sign Out</span>
                     </button>
                 </div>
             </main>
