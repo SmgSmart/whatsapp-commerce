@@ -15,6 +15,20 @@ if (!neonUrl) {
 const auth = createAuthClient(neonUrl);
 console.log('Auth Client initialized with URL:', neonUrl);
 
+function getAuthHeaders(req: Request) {
+  const headers: Record<string, string> = {};
+  if (req.headers.cookie) {
+    headers['cookie'] = req.headers.cookie;
+  }
+  if (req.headers.authorization) {
+    headers['authorization'] = req.headers.authorization;
+  }
+  if (req.headers['user-agent']) {
+    headers['user-agent'] = req.headers['user-agent'];
+  }
+  return headers;
+}
+
 export async function requireUser(req: AuthedRequest, res: Response, next: NextFunction) {
   // 1. Check for real Neon Auth session first
   try {
@@ -26,17 +40,9 @@ export async function requireUser(req: AuthedRequest, res: Response, next: NextF
       console.log('Cookies found:', req.headers.cookie.split(';').map(c => c.split('=')[0].trim()));
     }
 
-    // Get token from header or cookie
-    const authHeader = req.headers.authorization;
-    const token = authHeader?.startsWith('Bearer ') 
-      ? authHeader.substring(7) 
-      : undefined;
-
     const { data: session } = await auth.getSession({
       fetchOptions: {
-        headers: token ? {
-          'Authorization': `Bearer ${token}`
-        } : (req.headers as any),
+        headers: getAuthHeaders(req),
       },
     });
 
@@ -69,16 +75,9 @@ export async function requireUser(req: AuthedRequest, res: Response, next: NextF
 export async function getSession(req: Request, res: Response) {
   // 1. Check for real Neon Auth session
   try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader?.startsWith('Bearer ') 
-      ? authHeader.substring(7) 
-      : undefined;
-
     const { data: session } = await auth.getSession({
       fetchOptions: {
-        headers: token ? {
-          'Authorization': `Bearer ${token}`
-        } : (req.headers as any),
+        headers: getAuthHeaders(req),
       },
     });
 
