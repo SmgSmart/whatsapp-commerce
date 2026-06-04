@@ -5,7 +5,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE TABLE IF NOT EXISTS stores (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  owner_id text NOT NULL,
+  owner_id uuid NOT NULL REFERENCES neon_auth.user(id) ON DELETE CASCADE,
   slug text NOT NULL UNIQUE,
   business_name text NOT NULL,
   logo_url text,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS stores (
 
 CREATE TABLE IF NOT EXISTS store_admins (
   store_id uuid NOT NULL REFERENCES stores(id) ON DELETE CASCADE,
-  user_id text NOT NULL,
+  user_id uuid NOT NULL REFERENCES neon_auth.user(id) ON DELETE CASCADE,
   role text NOT NULL DEFAULT 'owner',
   created_at timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (store_id, user_id),
