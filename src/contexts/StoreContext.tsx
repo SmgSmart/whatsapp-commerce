@@ -69,6 +69,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setStores([]);
     setActiveStoreId(null);
+    setLoading(true);
     fetchStores();
   }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 

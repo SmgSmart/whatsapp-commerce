@@ -32,7 +32,7 @@ export function Onboarding() {
         slug: formData.slug,
         whatsapp_number: formData.whatsappNumber,
       });
-      navigate('/admin');
+      navigate('/admin/billing');
     } catch (err: any) {
       setError(err.message || 'Failed to create store');
     } finally {
