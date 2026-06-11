@@ -15,10 +15,82 @@ if (!neonUrl) {
 const auth = createAuthClient(neonUrl);
 console.log('Auth Client initialized with URL:', neonUrl);
 
+export function rewriteRequestCookieHeader(cookieHeader: string | undefined): string | undefined {
+  if (!cookieHeader) return cookieHeader;
+  return cookieHeader
+    .split(';')
+    .map(part => {
+      const trimmed = part.trim();
+      const eqIdx = trimmed.indexOf('=');
+      if (eqIdx === -1) return trimmed;
+      
+      let key = trimmed.substring(0, eqIdx).trim();
+      const value = trimmed.substring(eqIdx + 1).trim();
+      
+      if ((key.startsWith('neon-auth.') || key.startsWith('better-auth.')) && !key.startsWith('__Secure-')) {
+        key = `__Secure-${key}`;
+      }
+      
+      return `${key}=${value}`;
+    })
+    .join('; ');
+}
+
+export function rewriteResponseCookie(cookie: string, isSecure: boolean): string {
+  const parts = cookie.split(';');
+  const firstPart = parts[0].trim();
+  const eqIdx = firstPart.indexOf('=');
+  
+  let key = firstPart;
+  let value = '';
+  if (eqIdx !== -1) {
+    key = firstPart.substring(0, eqIdx).trim();
+    value = firstPart.substring(eqIdx + 1).trim();
+  }
+  
+  // If not secure (HTTP), strip the __Secure- prefix from the cookie name
+  if (!isSecure && key.startsWith('__Secure-')) {
+    key = key.substring(9);
+  }
+  
+  const rewrittenParts = [`${key}=${value}`];
+  
+  for (let i = 1; i < parts.length; i++) {
+    const part = parts[i].trim();
+    const partLower = part.toLowerCase();
+    
+    // Skip Domain
+    if (partLower.startsWith('domain=')) {
+      continue;
+    }
+    // Skip SameSite (we will append our own)
+    if (partLower.startsWith('samesite=')) {
+      continue;
+    }
+    // Skip Secure attribute (we will append based on isSecure)
+    if (partLower === 'secure') {
+      continue;
+    }
+    
+    if (part) {
+      rewrittenParts.push(part);
+    }
+  }
+  
+  if (isSecure) {
+    rewrittenParts.push('Secure');
+    rewrittenParts.push('SameSite=Lax');
+  } else {
+    rewrittenParts.push('SameSite=Lax');
+  }
+  
+  return rewrittenParts.join('; ');
+}
+
 function getAuthHeaders(req: Request) {
   const headers: Record<string, string> = {};
   if (req.headers.cookie) {
-    headers['cookie'] = req.headers.cookie;
+    headers['cookie'] = rewriteRequestCookieHeader(req.headers.cookie) || '';
   }
   if (req.headers.authorization) {
     headers['authorization'] = req.headers.authorization;

@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'node:path';
 import cors from 'cors';
 import { createUploadSignature } from './cloudinary.js';
-import { login, getSession, requireUser, type AuthedRequest } from './auth.js';
+import { login, getSession, requireUser, rewriteRequestCookieHeader, rewriteResponseCookie, type AuthedRequest } from './auth.js';
 import { env } from './env.js';
 import { query } from './db.js';
 
@@ -36,7 +36,11 @@ app.use('/api/auth', async (req: express.Request, res: express.Response) => {
   const forwardHeaders: Record<string, string> = {};
   for (const [key, value] of Object.entries(req.headers)) {
     if (typeof value === 'string' && !skipRequestHeaders.has(key.toLowerCase())) {
-      forwardHeaders[key] = value;
+      if (key.toLowerCase() === 'cookie') {
+        forwardHeaders[key] = rewriteRequestCookieHeader(value) || '';
+      } else {
+        forwardHeaders[key] = value;
+      }
     }
   }
   // Rewrite Origin to the Neon target so Better Auth CSRF check passes
@@ -84,25 +88,16 @@ app.use('/api/auth', async (req: express.Request, res: express.Response) => {
     console.log(`[AUTH PROXY] Incoming cookies: ${req.headers.cookie || 'None'}`);
     console.log(`[AUTH PROXY] Protocol detection - host: ${host}, isLocalhost: ${isLocalhost}, isSecure: ${isSecure}`);
     
+    const rewrittenCookies: string[] = [];
     rawCookies.forEach((cookie: string) => {
-      // Strip Domain, Secure, and SameSite attributes if they exist
-      let rewritten = cookie
-        .replace(/Domain=[^;]+;?\s*/gi, '')
-        .replace(/Secure;?\s*/gi, '')
-        .replace(/SameSite=[^;]+;?\s*/gi, '');
-      
-      // Clean up any trailing semicolons or spaces
-      rewritten = rewritten.replace(/;\s*$/, '');
-      
-      // Append correct Secure and SameSite attributes
-      if (isSecure) {
-        rewritten += '; Secure; SameSite=Lax';
-      } else {
-        rewritten += '; SameSite=Lax';
-      }
+      const rewritten = rewriteResponseCookie(cookie, isSecure);
       console.log(`[AUTH PROXY] Rewriting cookie: "${cookie}" -> "${rewritten}"`);
-      res.append('Set-Cookie', rewritten);
+      rewrittenCookies.push(rewritten);
     });
+    
+    if (rewrittenCookies.length > 0) {
+      res.setHeader('Set-Cookie', rewrittenCookies);
+    }
 
     const responseBody = await upstream.text();
     res.send(responseBody);
