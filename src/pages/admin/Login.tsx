@@ -150,27 +150,33 @@ export function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4 font-sans">
+        <div className="min-h-screen bg-brand-dark flex items-center justify-center p-4 font-sans relative overflow-hidden">
+            {/* Ambient background glow */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute -top-[40%] -left-[20%] w-[80%] h-[80%] rounded-full bg-brand-steel/10 blur-[120px] animate-pulse-slow"></div>
+                <div className="absolute -bottom-[40%] -right-[20%] w-[80%] h-[80%] rounded-full bg-brand-cream/5 blur-[120px] animate-pulse-slow"></div>
+            </div>
+
             <motion.div 
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="w-full max-w-md bg-white rounded-[24px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-10 border border-gray-100"
+                className="w-full max-w-md bg-brand-steel/10 border border-brand-steel/15 text-white backdrop-blur-md rounded-[24px] shadow-2xl p-8 sm:p-10 relative z-10"
             >
                 <div className="flex flex-col items-center justify-center mb-8 text-center">
-                    <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-blue-200 rotate-3">
-                        <Store className="w-8 h-8 text-white -rotate-3" />
+                    <div className="w-16 h-16 bg-gradient-to-br from-brand-steel/30 to-brand-cream/20 rounded-2xl flex items-center justify-center mb-6 shadow-lg border border-brand-steel/30 rotate-3">
+                        <Store className="w-8 h-8 text-brand-cream -rotate-3" />
                     </div>
-                    <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+                    <h1 className="text-3xl font-extrabold text-white tracking-tight">
                         {showOtp ? 'Check your email' : isSignUp ? 'Create Account' : 'Welcome Back'}
                     </h1>
-                    <p className="text-gray-500 mt-2 text-md">
+                    <p className="text-brand-slate mt-2 text-md">
                         {showOtp ? `We sent a code to ${email}` : isSignUp ? 'Start building your WhatsApp store' : 'Manage your WhatsApp store with ease'}
                     </p>
                 </div>
 
                 {error && (
-                    <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl font-medium text-center">
+                    <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm rounded-xl font-semibold text-center">
                         {error}
                     </div>
                 )}
@@ -194,10 +200,10 @@ export function Login() {
                                         exit={{ opacity: 0, height: 0, scale: 0.95 }}
                                         transition={{ duration: 0.25, ease: "easeInOut" }}
                                     >
-                                        <label className="block text-sm font-semibold text-gray-700 mb-1.5 mt-1">Full Name</label>
+                                        <label className="block text-sm font-semibold text-brand-slate mb-1.5 mt-1">Full Name</label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                                <UserIcon className="h-5 w-5 text-gray-400" />
+                                                <UserIcon className="h-5 w-5 text-brand-slate/60" />
                                             </div>
                                             <input
                                                 type="text"
@@ -205,7 +211,7 @@ export function Login() {
                                                 onChange={(e) => setName(e.target.value)}
                                                 required={isSignUp}
                                                 placeholder="John Doe"
-                                                className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
+                                                className="w-full pl-10 pr-4 py-3 bg-brand-dark/45 border border-brand-steel/20 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all text-white placeholder-brand-slate/30"
                                             />
                                         </div>
                                     </motion.div>
@@ -213,10 +219,10 @@ export function Login() {
                             </AnimatePresence>
 
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
+                                <label className="block text-sm font-semibold text-brand-slate mb-1.5">Email Address</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                        <Mail className="h-5 w-5 text-gray-400" />
+                                        <Mail className="h-5 w-5 text-brand-slate/60" />
                                     </div>
                                     <input
                                         type="email"
@@ -224,16 +230,16 @@ export function Login() {
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
                                         placeholder="you@example.com"
-                                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
+                                        className="w-full pl-10 pr-4 py-3 bg-brand-dark/45 border border-brand-steel/20 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all text-white placeholder-brand-slate/30"
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
+                                <label className="block text-sm font-semibold text-brand-slate mb-1.5">Password</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                        <Lock className="h-5 w-5 text-gray-400" />
+                                        <Lock className="h-5 w-5 text-brand-slate/60" />
                                     </div>
                                     <input
                                         type="password"
@@ -242,7 +248,7 @@ export function Login() {
                                         required
                                         minLength={8}
                                         placeholder="••••••••"
-                                        className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900"
+                                        className="w-full pl-10 pr-4 py-3 bg-brand-dark/45 border border-brand-steel/20 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all text-white placeholder-brand-slate/30"
                                     />
                                 </div>
                             </div>
@@ -250,7 +256,7 @@ export function Login() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-all duration-200 shadow-md shadow-blue-200 active:scale-[0.98] flex items-center justify-center disabled:opacity-70 disabled:active:scale-100 mt-2"
+                                className="w-full bg-brand-cream hover:bg-white text-brand-dark font-bold py-3.5 rounded-xl transition-all duration-200 shadow-md shadow-brand-cream/5 active:scale-[0.98] flex items-center justify-center disabled:opacity-70 disabled:active:scale-100 mt-2"
                             >
                                 {loading ? (
                                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -269,12 +275,12 @@ export function Login() {
                             exit={{ opacity: 0, x: 20 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-blue-700 leading-relaxed text-center">
+                            <div className="bg-brand-steel/10 border border-brand-steel/15 rounded-xl p-4 text-sm text-brand-slate leading-relaxed text-center">
                                 If you don't see the email, please check your <strong>Spam</strong> or <strong>Junk</strong> folder.
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1.5 text-center">6-Digit Code</label>
+                                <label className="block text-sm font-semibold text-brand-slate mb-1.5 text-center">6-Digit Code</label>
                                 <input
                                     type="text"
                                     value={otp}
@@ -282,14 +288,14 @@ export function Login() {
                                     required
                                     maxLength={6}
                                     placeholder="000000"
-                                    className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-900 text-center text-3xl tracking-widest font-bold font-mono"
+                                    className="w-full px-4 py-4 bg-brand-dark/45 border border-brand-steel/20 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all text-white text-center text-3xl tracking-widest font-bold font-mono placeholder-brand-slate/20"
                                 />
                             </div>
 
                             <button
                                 type="submit"
                                 disabled={loading || otp.length < 6}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-all duration-200 shadow-md shadow-blue-200 active:scale-[0.98] flex items-center justify-center disabled:opacity-70 disabled:active:scale-100 mt-4"
+                                className="w-full bg-brand-cream hover:bg-white text-brand-dark font-bold py-3.5 rounded-xl transition-all duration-200 shadow-md shadow-brand-cream/5 active:scale-[0.98] flex items-center justify-center disabled:opacity-70 disabled:active:scale-100 mt-4"
                             >
                                 {loading ? (
                                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -303,7 +309,7 @@ export function Login() {
                                     type="button"
                                     disabled={resendCountdown > 0 || resendLoading}
                                     onClick={handleResendOtp}
-                                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 disabled:text-gray-400 transition-colors flex items-center justify-center gap-1.5 cursor-pointer disabled:cursor-not-allowed"
+                                    className="text-sm font-semibold text-brand-cream hover:text-white disabled:text-gray-500 transition-colors flex items-center justify-center gap-1.5 cursor-pointer disabled:cursor-not-allowed"
                                 >
                                     {resendLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                                     {resendCountdown > 0 ? `Resend Code (${resendCountdown}s)` : 'Resend Code'}
@@ -320,7 +326,7 @@ export function Login() {
                                             console.error('Error signing out on back:', e);
                                         }
                                     }}
-                                    className="text-sm font-semibold text-gray-500 hover:text-gray-700 transition-colors"
+                                    className="text-sm font-semibold text-brand-slate hover:text-white transition-colors"
                                 >
                                     Back to login
                                 </button>
@@ -330,25 +336,25 @@ export function Login() {
                 </AnimatePresence>
 
                 {!showOtp && (
-                    <div className="mt-8 pt-6 border-t border-gray-50 text-center">
-                        <p className="text-sm text-gray-500 mb-4">
+                    <div className="mt-8 pt-6 border-t border-brand-steel/15 text-center">
+                        <p className="text-sm text-brand-slate mb-4">
                             {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
                             <button
                                 onClick={() => {
                                     setIsSignUp(!isSignUp);
                                     setError('');
                                 }}
-                                className="text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+                                className="text-brand-cream hover:text-white font-semibold transition-colors focus:outline-none"
                             >
                                 {isSignUp ? 'Sign In' : 'Sign Up'}
-                            </button>
+                              </button>
                         </p>
                         
                         <button
                             onClick={() => navigate('/')}
-                            className="text-sm font-semibold text-gray-400 hover:text-gray-600 transition-colors inline-flex items-center gap-2 group"
+                            className="text-sm font-semibold text-brand-slate hover:text-white transition-colors inline-flex items-center gap-2 group"
                         >
-                            <Store className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                            <Store className="w-4 h-4 text-brand-cream group-hover:scale-110 transition-transform" />
                             Return to Directory
                         </button>
                     </div>

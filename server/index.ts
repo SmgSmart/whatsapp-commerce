@@ -75,10 +75,25 @@ app.use('/api/auth', async (req: express.Request, res: express.Response) => {
       }
     });
 
-    // Rewrite Set-Cookie headers: strip Domain, ensure Secure + SameSite=Lax
+    // Rewrite Set-Cookie headers: strip Domain, ensure Secure is conditional on HTTPS, set SameSite=Lax
     const rawCookies: string[] = (upstream.headers as any).getSetCookie?.() ?? [];
+    const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
     rawCookies.forEach((cookie: string) => {
-      const rewritten = cookie.replace(/Domain=[^;]+;?\s*/gi, '') + '; Secure; SameSite=Lax';
+      // Strip Domain, Secure, and SameSite attributes if they exist
+      let rewritten = cookie
+        .replace(/Domain=[^;]+;?\s*/gi, '')
+        .replace(/Secure;?\s*/gi, '')
+        .replace(/SameSite=[^;]+;?\s*/gi, '');
+      
+      // Clean up any trailing semicolons or spaces
+      rewritten = rewritten.replace(/;\s*$/, '');
+      
+      // Append correct Secure and SameSite attributes
+      if (isSecure) {
+        rewritten += '; Secure; SameSite=Lax';
+      } else {
+        rewritten += '; SameSite=Lax';
+      }
       res.append('Set-Cookie', rewritten);
     });
 
