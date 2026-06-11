@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'node:path';
 import cors from 'cors';
+import crypto from 'node:crypto';
 import { createUploadSignature } from './cloudinary.js';
 import { login, getSession, requireUser, rewriteRequestCookieHeader, rewriteResponseCookie, type AuthedRequest } from './auth.js';
 import { env } from './env.js';
@@ -127,9 +128,109 @@ app.use(cors((req, callback) => {
 
   callback(null, {
     origin: allowed,
-    credentials: true
   });
 }));
+
+app.post('/api/webhooks/paystack', express.raw({ type: 'application/json' }), async (req: express.Request, res: express.Response) => {
+  const signature = req.headers['x-paystack-signature'] as string;
+  const secret = env.paystackSecretKey || '';
+
+  if (!signature) {
+    res.status(400).send('Missing signature');
+    return;
+  }
+
+  // Verify signature using crypto
+  const hash = crypto
+    .createHmac('sha512', secret)
+    .update(req.body)
+    .digest('hex');
+
+  if (hash !== signature) {
+    console.error('[PAYSTACK WEBHOOK] Signature verification failed');
+    res.status(400).send('Invalid signature');
+    return;
+  }
+
+  let payload: any;
+  try {
+    payload = JSON.parse(req.body.toString());
+  } catch (err) {
+    console.error('[PAYSTACK WEBHOOK] Failed to parse payload:', err);
+    res.status(400).send('Invalid JSON');
+    return;
+  }
+
+  const event = payload.event;
+  const data = payload.data;
+  console.log(`[PAYSTACK WEBHOOK] Received event: ${event}`);
+
+  const storeId = data?.metadata?.store_id;
+
+  try {
+    if (event === 'subscription.create' || event === 'subscription.enable') {
+      const subCode = data.subscription_code;
+      const custCode = data.customer?.customer_code;
+      
+      if (storeId) {
+        console.log(`[PAYSTACK WEBHOOK] Activating subscription for store ${storeId}: subscription_code=${subCode}`);
+        await query(
+          `UPDATE stores 
+           SET subscription_status = 'active',
+               paystack_subscription_code = $1,
+               paystack_customer_code = $2,
+               trial_ends_at = NULL
+           WHERE id = $3`,
+          [subCode, custCode, storeId]
+        );
+      } else {
+        console.warn('[PAYSTACK WEBHOOK] No store_id found in metadata for subscription.create');
+      }
+    } 
+    else if (event === 'charge.success') {
+      const planCode = data.plan?.plan_code;
+      if (planCode && storeId) {
+        console.log(`[PAYSTACK WEBHOOK] Successful charge for plan ${planCode} on store ${storeId}`);
+        await query(
+          `UPDATE stores 
+           SET subscription_status = 'active',
+               trial_ends_at = NULL
+           WHERE id = $1`,
+          [storeId]
+        );
+      }
+    }
+    else if (event === 'subscription.disable') {
+      const subCode = data.subscription_code;
+      console.log(`[PAYSTACK WEBHOOK] Disabling subscription: ${subCode}`);
+      await query(
+        `UPDATE stores 
+         SET subscription_status = 'canceled'
+         WHERE paystack_subscription_code = $1`,
+        [subCode]
+      );
+    }
+    else if (event === 'invoice.payment_failed') {
+      const subCode = data.subscription?.subscription_code;
+      console.log(`[PAYSTACK WEBHOOK] Subscription invoice payment failed: ${subCode}`);
+      if (subCode) {
+        await query(
+          `UPDATE stores 
+           SET subscription_status = 'past_due'
+           WHERE paystack_subscription_code = $1`,
+          [subCode]
+        );
+      }
+    }
+  } catch (err) {
+    console.error('[PAYSTACK WEBHOOK ERROR]', err);
+    res.status(500).send('Database update error');
+    return;
+  }
+
+  res.status(200).send('Webhook handled successfully');
+});
+
 app.use(express.json({ limit: '1mb' }));
 
 // Production: Serve static frontend files
@@ -171,13 +272,14 @@ async function getAdminStore(userId: string) {
   return rows[0] || null;
 }
 
-async function requireAdminStore(req: AuthedRequest, res: express.Response) {
+async function requireAdminStore(req: AuthedRequest, res: express.Response, bypassSubscriptionCheck = false) {
   if (!req.userId) {
     res.status(401).json({ error: 'Not authenticated' });
     return null;
   }
 
   const storeId = req.headers['x-store-id'] as string;
+  let store: any = null;
   
   if (storeId) {
     const rows = await query<any>(
@@ -186,13 +288,29 @@ async function requireAdminStore(req: AuthedRequest, res: express.Response) {
        WHERE s.id = $1 AND sa.user_id = $2`,
       [storeId, req.userId]
     );
-    if (rows[0]) return rows[0];
+    if (rows[0]) store = rows[0];
   }
 
-  const store = await getAdminStore(req.userId);
+  if (!store) {
+    store = await getAdminStore(req.userId);
+  }
+
   if (!store) {
     res.status(404).json({ error: 'No store found for this admin user' });
     return null;
+  }
+
+  if (!bypassSubscriptionCheck) {
+    const isTrialActive = store.trial_ends_at ? new Date(store.trial_ends_at) > new Date() : false;
+    const isSubActive = store.subscription_status === 'active';
+    if (!isTrialActive && !isSubActive) {
+      res.status(402).json({
+        error: 'Payment Required',
+        code: 'SUBSCRIPTION_EXPIRED',
+        message: 'Your trial or subscription has expired. Please subscribe to continue using the platform.'
+      });
+      return null;
+    }
   }
 
   return store;
@@ -357,7 +475,97 @@ app.get('/api/admin/store', async (req: AuthedRequest, res, next) => {
         return;
       }
     }
-    res.json(await requireAdminStore(req, res));
+    res.json(await requireAdminStore(req, res, true));
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/api/admin/billing/status', async (req: AuthedRequest, res, next) => {
+  try {
+    const store = await requireAdminStore(req, res, true);
+    if (!store) return;
+
+    const trialEnds = store.trial_ends_at ? new Date(store.trial_ends_at) : null;
+    const isTrialActive = trialEnds ? trialEnds > new Date() : false;
+    const isSubActive = store.subscription_status === 'active';
+    const isActive = isTrialActive || isSubActive;
+
+    const daysLeft = trialEnds 
+      ? Math.max(0, Math.ceil((trialEnds.getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+      : 0;
+
+    res.json({
+      subscription_status: store.subscription_status,
+      trial_ends_at: store.trial_ends_at,
+      paystack_subscription_code: store.paystack_subscription_code,
+      paystack_customer_code: store.paystack_customer_code,
+      is_active: isActive,
+      days_left: daysLeft
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post('/api/admin/billing/subscribe', async (req: AuthedRequest, res, next) => {
+  try {
+    const store = await requireAdminStore(req, res, true);
+    if (!store) return;
+
+    if (!req.userId) {
+      res.status(401).json({ error: 'Not authenticated' });
+      return;
+    }
+
+    const userRows = await query<{ email: string }>(
+      'SELECT email FROM neon_auth.user WHERE id = $1',
+      [req.userId]
+    );
+    const email = userRows[0]?.email;
+    if (!email) {
+      res.status(400).json({ error: 'User email not found' });
+      return;
+    }
+
+    const paystackSecret = env.paystackSecretKey;
+    const planCode = env.paystackPlanCode;
+
+    if (!paystackSecret || !planCode) {
+      res.status(500).json({ error: 'Paystack is not configured on the server' });
+      return;
+    }
+
+    const paystackResponse = await fetch('https://api.paystack.co/transaction/initialize', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${paystackSecret}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email,
+        amount: 20000,
+        currency: 'GHS',
+        plan: planCode,
+        metadata: {
+          store_id: store.id
+        }
+      })
+    });
+
+    const result: any = await paystackResponse.json();
+
+    if (!paystackResponse.ok || !result.status) {
+      console.error('[PAYSTACK ERROR]', result);
+      res.status(400).json({ error: result.message || 'Failed to initialize subscription' });
+      return;
+    }
+
+    res.json({
+      authorization_url: result.data.authorization_url,
+      access_code: result.data.access_code,
+      reference: result.data.reference
+    });
   } catch (error) {
     next(error);
   }

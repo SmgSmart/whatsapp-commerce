@@ -9,6 +9,7 @@ import { Dashboard } from './pages/admin/Dashboard';
 import { CategoryManager } from './pages/admin/CategoryManager';
 import { ProductManager } from './pages/admin/ProductManager';
 import { BusinessSettings } from './pages/admin/BusinessSettings';
+import { Billing } from './pages/admin/Billing';
 import { AccountView } from '@neondatabase/auth-ui';
 import '@neondatabase/auth-ui/css'; // Correct path to the official styles!
 import { Onboarding } from './pages/admin/Onboarding';
@@ -41,6 +42,7 @@ function App() {
                 <Route path="products" element={<ProductManager />} />
                 <Route path="categories" element={<CategoryManager />} />
                 <Route path="settings" element={<BusinessSettings />} />
+                <Route path="billing" element={<Billing />} />
                 <Route path="account" element={<AccountView />} />
                 <Route path="onboarding" element={<Onboarding />} />
               </Route>

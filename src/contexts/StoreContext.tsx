@@ -10,6 +10,9 @@ interface StoreContextType {
   activeStoreId: string | null;
   setActiveStoreId: (id: string) => void;
   refetch: () => Promise<void>;
+  isSubscriptionActive: boolean;
+  daysLeftOfTrial: number;
+  subscriptionStatus: 'trialing' | 'active' | 'past_due' | 'canceled' | 'unpaid' | null;
 }
 
 const StoreContext = createContext<StoreContextType>({
@@ -19,6 +22,9 @@ const StoreContext = createContext<StoreContextType>({
   activeStoreId: null,
   setActiveStoreId: () => {},
   refetch: async () => {},
+  isSubscriptionActive: false,
+  daysLeftOfTrial: 0,
+  subscriptionStatus: null,
 });
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
@@ -68,8 +74,27 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const store = activeStoreId ? (stores.find(s => s.id === activeStoreId) ?? null) : (stores[0] ?? null);
 
+  const isTrialActive = store?.trial_ends_at ? new Date(store.trial_ends_at) > new Date() : false;
+  const isSubscriptionActive = store ? (store.subscription_status === 'active' || isTrialActive) : false;
+  const daysLeftOfTrial = store?.trial_ends_at
+    ? Math.max(0, Math.ceil((new Date(store.trial_ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    : 0;
+  const subscriptionStatus = store?.subscription_status ?? null;
+
   return (
-    <StoreContext.Provider value={{ store, stores, loading, activeStoreId, setActiveStoreId, refetch: fetchStores }}>
+    <StoreContext.Provider
+      value={{
+        store,
+        stores,
+        loading,
+        activeStoreId,
+        setActiveStoreId,
+        refetch: fetchStores,
+        isSubscriptionActive,
+        daysLeftOfTrial,
+        subscriptionStatus,
+      }}
+    >
       {children}
     </StoreContext.Provider>
   );

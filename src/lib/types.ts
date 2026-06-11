@@ -11,6 +11,8 @@ export interface BusinessInfo {
   facebook_url: string | null;
   instagram_url: string | null;
   active?: boolean;
+  trial_ends_at?: string | null;
+  subscription_status?: 'trialing' | 'active' | 'past_due' | 'canceled' | 'unpaid' | null;
   created_at: string;
   updated_at: string;
 }

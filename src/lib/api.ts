@@ -167,4 +167,22 @@ export const adminApi = {
       public_id: uploaded.public_id as string,
     };
   },
+  getBillingStatus: () =>
+    apiRequest<{
+      subscription_status: string | null;
+      trial_ends_at: string | null;
+      paystack_subscription_code: string | null;
+      paystack_customer_code: string | null;
+      is_active: boolean;
+      days_left: number;
+    }>('/api/admin/billing/status'),
+  subscribe: () =>
+    apiRequest<{
+      authorization_url: string;
+      access_code: string;
+      reference: string;
+    }>('/api/admin/billing/subscribe', {
+      method: 'POST',
+    }),
 };
+

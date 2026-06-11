@@ -27,6 +27,10 @@ export const env = {
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
+  paystackSecretKey: process.env.PAYSTACK_SECRET_KEY,
+  paystackPlanCode: process.env.PAYSTACK_PLAN_CODE,
+  paystackWebhookSecret: process.env.PAYSTACK_WEBHOOK_SECRET,
+  paystackPublicKey: process.env.VITE_PAYSTACK_PUBLIC_KEY,
 };
 
 export function requireEnv(name: keyof typeof env) {

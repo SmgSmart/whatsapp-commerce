@@ -10,12 +10,14 @@ import {
     LogOut,
     Store,
     Eye,
-    UserCircle
+    UserCircle,
+    CreditCard,
+    ShieldAlert
 } from 'lucide-react';
 
 export function AdminLayout() {
     const { user, loading: authLoading, signOut } = useAuth();
-    const { store, stores, loading: storeLoading } = useStore();
+    const { store, stores, loading: storeLoading, isSubscriptionActive, daysLeftOfTrial, subscriptionStatus } = useStore();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -61,8 +63,14 @@ export function AdminLayout() {
         { name: 'Products', href: '/admin/products', icon: Package },
         { name: 'Categories', href: '/admin/categories', icon: Tags },
         { name: 'Store Settings', href: '/admin/settings', icon: Settings },
+        { name: 'Billing & Plan', href: '/admin/billing', icon: CreditCard },
         { name: 'Account', href: '/admin/account', icon: UserCircle },
     ];
+
+    const showPaywall = !isSubscriptionActive && 
+                        location.pathname !== '/admin/billing' && 
+                        location.pathname !== '/admin/onboarding' && 
+                        stores.length > 0;
 
     return (
         <div className="min-h-screen bg-brand-dark flex text-brand-gray">
@@ -80,16 +88,26 @@ export function AdminLayout() {
                             <Link
                                 key={item.name}
                                 to={item.href}
-                                className={`flex items-center px-3 py-2.5 text-sm font-semibold rounded-lg transition-colors ${isActive
+                                className={`flex items-center justify-between px-3 py-2.5 text-sm font-semibold rounded-lg transition-colors ${isActive
                                     ? 'bg-brand-cream text-brand-dark shadow-sm shadow-brand-cream/10'
                                     : 'text-brand-slate hover:bg-brand-steel/20 hover:text-white'
                                     }`}
                             >
-                                <item.icon
-                                    className={`flex-shrink-0 -ml-1 mr-3 h-5 w-5 ${isActive ? 'text-brand-dark' : 'text-brand-slate'
-                                        }`}
-                                />
-                                <span className="truncate">{item.name}</span>
+                                <div className="flex items-center truncate">
+                                    <item.icon
+                                        className={`flex-shrink-0 -ml-1 mr-3 h-5 w-5 ${isActive ? 'text-brand-dark' : 'text-brand-slate'
+                                            }`}
+                                    />
+                                    <span className="truncate">{item.name}</span>
+                                </div>
+                                {item.name === 'Billing & Plan' && subscriptionStatus === 'trialing' && daysLeftOfTrial > 0 && (
+                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isActive
+                                        ? 'bg-brand-dark/20 text-brand-dark'
+                                        : 'bg-brand-cream/10 text-brand-cream border border-brand-cream/20'
+                                        }`}>
+                                        {daysLeftOfTrial}d left
+                                    </span>
+                                )}
                             </Link>
                         );
                     })}
@@ -135,8 +153,28 @@ export function AdminLayout() {
                     </Link>
                 </div>
 
-                <div className="flex-1 overflow-auto">
-                    <Outlet />
+                <div className="flex-1 overflow-auto bg-brand-dark">
+                    {showPaywall ? (
+                        <div className="min-h-[80vh] flex items-center justify-center p-6 md:p-8">
+                            <div className="bg-brand-steel/10 rounded-3xl border border-brand-steel/15 p-8 max-w-lg w-full text-center backdrop-blur-md shadow-2xl">
+                                <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                    <ShieldAlert className="w-8 h-8" />
+                                </div>
+                                <h2 className="text-2xl font-extrabold text-white tracking-tight font-display mb-3">Subscription Required</h2>
+                                <p className="text-brand-slate text-sm leading-relaxed mb-8">
+                                    Your store's trial or premium subscription has ended. To continue managing products, viewing orders, and accepting WhatsApp checkout routes, please update your billing.
+                                </p>
+                                <button
+                                    onClick={() => navigate('/admin/billing')}
+                                    className="w-full py-4 bg-gradient-to-r from-brand-cream to-brand-cream/90 hover:from-brand-cream/95 hover:to-brand-cream text-brand-dark font-extrabold rounded-2xl transition duration-200 shadow-lg shadow-brand-cream/10"
+                                >
+                                    Activate Professional Plan
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <Outlet />
+                    )}
                 </div>
 
                 {/* Mobile Navigation Bar */}
