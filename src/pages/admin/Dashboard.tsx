@@ -1,26 +1,22 @@
 import { useEffect, useState } from 'react';
 import { adminApi } from '../../lib/api';
 import { Package, Tags, Store, ExternalLink, Copy, Check } from 'lucide-react';
-import type { BusinessInfo } from '../../lib/types';
+import { useStore } from '../../contexts/StoreContext';
 
 export function Dashboard() {
+    const { store } = useStore();
     const [stats, setStats] = useState({
         products: 0,
         categories: 0,
     });
-    const [store, setStore] = useState<BusinessInfo | null>(null);
     const [loading, setLoading] = useState(true);
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         async function loadData() {
             try {
-                const [statsData, storeData] = await Promise.all([
-                    adminApi.getDashboardStats(),
-                    adminApi.getBusinessInfo()
-                ]);
+                const statsData = await adminApi.getDashboardStats();
                 setStats(statsData);
-                setStore(storeData);
             } catch (error) {
                 console.error('Error loading dashboard data:', error);
             } finally {

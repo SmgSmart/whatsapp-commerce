@@ -1,7 +1,7 @@
 import { Navigate, Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { adminApi } from '../../lib/api';
+import { useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useStore } from '../../contexts/StoreContext';
 import {
     LayoutDashboard,
     Package,
@@ -14,7 +14,8 @@ import {
 } from 'lucide-react';
 
 export function AdminLayout() {
-    const { user, loading, signOut } = useAuth();
+    const { user, loading: authLoading, signOut } = useAuth();
+    const { store, stores, loading: storeLoading } = useStore();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -27,42 +28,19 @@ export function AdminLayout() {
         }
     };
 
-    const [checkingStore, setCheckingStore] = useState(true);
-    const [storeSlug, setStoreSlug] = useState<string | null>(null);
-
+    // Redirect to onboarding if the authenticated user has no stores yet
     useEffect(() => {
-        const checkStoreStatus = async () => {
-            if (!user) {
-                setCheckingStore(false);
-                return;
-            }
+        if (!user || authLoading || storeLoading) return;
+        if (location.pathname === '/admin/onboarding') return;
 
-            // Skip check if already on onboarding page
-            if (location.pathname === '/admin/onboarding') {
-                setCheckingStore(false);
-                return;
-            }
+        if (stores.length === 0) {
+            navigate('/admin/onboarding', { replace: true });
+        }
+    }, [user, authLoading, storeLoading, stores.length, location.pathname, navigate]);
 
-            try {
-                const stores = await adminApi.getMyStores();
-                if (!stores || stores.length === 0) {
-                    console.log('No stores found, redirecting to onboarding...');
-                    navigate('/admin/onboarding', { replace: true });
-                } else {
-                    setStoreSlug(stores[0].slug || null);
-                }
-            } catch (error: any) {
-                console.error('Error checking store status:', error);
-                // If it's a 401, let the Auth check handle it later
-            } finally {
-                setCheckingStore(false);
-            }
-        };
+    const loading = authLoading || storeLoading;
 
-        checkStoreStatus();
-    }, [user, location.pathname, navigate]);
-
-    if (loading || checkingStore) {
+    if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-brand-dark">
                 <div className="relative">
@@ -75,6 +53,8 @@ export function AdminLayout() {
     if (!user || !user.emailVerified) {
         return <Navigate to="/admin/login" state={{ from: location }} replace />;
     }
+
+    const storeSlug = store?.slug ?? null;
 
     const navigation = [
         { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },

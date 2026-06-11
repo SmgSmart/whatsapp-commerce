@@ -39,7 +39,6 @@ export default defineConfig({
         target: 'http://localhost:8787',
         changeOrigin: true,
         secure: false,
-        cookieDomainRewrite: 'localhost',
         configure: (proxy, _options) => {
           proxy.on('proxyRes', (proxyRes, req, _res) => {
             // Log when cookies are being sent back from the server

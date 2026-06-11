@@ -71,6 +71,10 @@ export function rewriteResponseCookie(cookie: string, isSecure: boolean): string
     if (partLower === 'secure') {
       continue;
     }
+    // Skip Partitioned attribute if not secure (Partitioned requires Secure flag)
+    if (!isSecure && partLower === 'partitioned') {
+      continue;
+    }
     
     if (part) {
       rewrittenParts.push(part);
@@ -133,13 +137,15 @@ export async function requireUser(req: AuthedRequest, res: Response, next: NextF
     console.error('Session verification error:', error);
   }
 
-  // 2. Fallback to Dev User only in development
+  // 2. Fallback to Dev User only in development (DISABLED to prevent wrong-store leakage)
+  /*
   const isProd = process.env.NODE_ENV === 'production';
   if (env.devAdminUserId && !isProd) {
     req.userId = env.devAdminUserId;
     next();
     return;
   }
+  */
 
   res.status(401).json({ error: 'Unauthorized. Please sign in.' });
 }
@@ -166,7 +172,8 @@ export async function getSession(req: Request, res: Response) {
     console.error('Session retrieval error:', error);
   }
 
-  // 2. Fallback to Dev User (LOCAL ONLY)
+  // 2. Fallback to Dev User (LOCAL ONLY - DISABLED to prevent wrong-store leakage)
+  /*
   const isProd = process.env.NODE_ENV === 'production';
   if (env.devAdminUserId && !isProd) {
     return res.json({
@@ -177,6 +184,7 @@ export async function getSession(req: Request, res: Response) {
       },
     });
   }
+  */
 
   res.json({ user: null });
 }

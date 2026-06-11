@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { CartProvider } from './contexts/CartContext';
 import { AuthProvider } from './contexts/AuthContext';
+import { StoreProvider } from './contexts/StoreContext';
 import { Store } from './pages/Store';
 import { StoreDirectory } from './pages/StoreDirectory';
 import { AdminLayout } from './components/admin/AdminLayout';
@@ -19,37 +20,40 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <CartProvider>
-          <Routes>
-            {/* Public Store Routes */}
-            <Route path="/" element={<StoreDirectory />} />
-            <Route path="/store/:slug" element={<Store />} />
+        <StoreProvider>
+          <CartProvider>
+            <Routes>
+              {/* Public Store Routes */}
+              <Route path="/" element={<StoreDirectory />} />
+              <Route path="/store/:slug" element={<Store />} />
 
-            {/* OAuth Callback Handlers */}
-            <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route path="/auth/success" element={<AuthSuccess />} />
+              {/* OAuth Callback Handlers */}
+              <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/auth/success" element={<AuthSuccess />} />
 
-            {/* Admin Auth */}
-            <Route path="/admin/login" element={<Login />} />
-            <Route path="/admin/signup" element={<Login />} />
+              {/* Admin Auth */}
+              <Route path="/admin/login" element={<Login />} />
+              <Route path="/admin/signup" element={<Login />} />
 
-            {/* Protected Admin Routes */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="products" element={<ProductManager />} />
-              <Route path="categories" element={<CategoryManager />} />
-              <Route path="settings" element={<BusinessSettings />} />
-              <Route path="account" element={<AccountView />} />
-              <Route path="onboarding" element={<Onboarding />} />
-            </Route>
+              {/* Protected Admin Routes */}
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="products" element={<ProductManager />} />
+                <Route path="categories" element={<CategoryManager />} />
+                <Route path="settings" element={<BusinessSettings />} />
+                <Route path="account" element={<AccountView />} />
+                <Route path="onboarding" element={<Onboarding />} />
+              </Route>
 
-            {/* Catch all */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </CartProvider>
+              {/* Catch all */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </CartProvider>
+        </StoreProvider>
       </AuthProvider>
     </BrowserRouter>
   );
 }
 
 export default App;
+
