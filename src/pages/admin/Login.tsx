@@ -28,7 +28,9 @@ export function Login() {
         if (user) {
             if (user.emailVerified) {
                 if (!awaitingOtp.current) {
-                    navigate('/admin');
+                    // Hard redirect: forces full page reload so AdminLayout reads a fresh
+                    // session from the server, avoiding the user=null race condition.
+                    window.location.href = '/admin';
                 }
             } else {
                 // User has an unverified session (e.g., from signup or page refresh)
@@ -40,7 +42,8 @@ export function Login() {
                 awaitingOtp.current = true;
             }
         }
-    }, [user, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user]);
 
     const [resendCountdown, setResendCountdown] = useState(0);
     const [resendLoading, setResendLoading] = useState(false);
@@ -114,9 +117,11 @@ export function Login() {
                     throw new Error(signInError.message || 'Invalid email or password');
                 }
                 
-                // AuthContext will catch the session update automatically
-                // Navigate directly to admin
-                navigate('/admin');
+                // Use a hard redirect instead of React Router navigate() to force a full
+                // page reload — this ensures the session cookie is read fresh from the
+                // server and the AuthContext re-initialises cleanly, avoiding a race
+                // condition where AdminLayout sees user=null and bounces back to login.
+                window.location.href = '/admin';
             }
         } catch (err: any) {
             console.error('Authentication error:', err);
@@ -139,8 +144,9 @@ export function Login() {
 
             // Clear the OTP guard so future redirects work normally
             awaitingOtp.current = false;
-            // Success! Navigate to the "Account Ready" page
-            navigate('/auth/success');
+            // Hard redirect to /admin — same reasoning as sign-in: force full reload so
+            // the session is fetched fresh and the verified state is picked up correctly.
+            window.location.href = '/admin';
         } catch (err: any) {
             console.error('OTP Verification error:', err);
             setError(err.message || 'An error occurred while verifying the code.');

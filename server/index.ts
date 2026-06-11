@@ -77,7 +77,13 @@ app.use('/api/auth', async (req: express.Request, res: express.Response) => {
 
     // Rewrite Set-Cookie headers: strip Domain, ensure Secure is conditional on HTTPS, set SameSite=Lax
     const rawCookies: string[] = (upstream.headers as any).getSetCookie?.() ?? [];
-    const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
+    const host = req.headers.host || '';
+    const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1') || host.startsWith('192.168.') || host.startsWith('10.');
+    const isSecure = !isLocalhost;
+    
+    console.log(`[AUTH PROXY] Incoming cookies: ${req.headers.cookie || 'None'}`);
+    console.log(`[AUTH PROXY] Protocol detection - host: ${host}, isLocalhost: ${isLocalhost}, isSecure: ${isSecure}`);
+    
     rawCookies.forEach((cookie: string) => {
       // Strip Domain, Secure, and SameSite attributes if they exist
       let rewritten = cookie
@@ -94,6 +100,7 @@ app.use('/api/auth', async (req: express.Request, res: express.Response) => {
       } else {
         rewritten += '; SameSite=Lax';
       }
+      console.log(`[AUTH PROXY] Rewriting cookie: "${cookie}" -> "${rewritten}"`);
       res.append('Set-Cookie', rewritten);
     });
 
