@@ -64,8 +64,8 @@ export function Billing() {
       const data = await adminApi.subscribe();
 
       // 3. Open Paystack Inline Pop
+      // NOTE: When using access_code, do NOT also pass 'key' — Paystack rejects requests with both.
       const handler = (window as any).PaystackPop.setup({
-        key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
         access_code: data.access_code,
         onSuccess: async (response: any) => {
           console.log('[Paystack Success]', response);
