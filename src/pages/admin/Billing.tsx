@@ -16,6 +16,7 @@ export function Billing() {
     days_left: number;
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
 
   useEffect(() => {
     loadBillingStatus();
@@ -51,6 +52,7 @@ export function Billing() {
 
   const handleSubscribe = async () => {
     setError(null);
+    setInfo(null);
     setSubmitting(true);
 
     try {
@@ -62,6 +64,14 @@ export function Billing() {
 
       // 2. Initialize subscription on backend
       const data = await adminApi.subscribe();
+
+      if (data.authorization_url && !data.access_code) {
+        window.open(data.authorization_url, '_blank');
+        setInfo('Redirected to the hosted subscription payment page in a new tab. Please complete the subscription payment there. Once paid, refresh this page to update your status.');
+        setSubmitting(false);
+        return;
+      }
+
       console.log('[Paystack Setup] Resuming transaction with access_code:', data.access_code);
 
       // 3. Open Paystack Inline Pop V2
@@ -111,6 +121,16 @@ export function Billing() {
           <div>
             <h4 className="font-bold text-white">Action Required</h4>
             <p className="text-sm mt-0.5">{error}</p>
+          </div>
+        </div>
+      )}
+
+      {info && (
+        <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-start gap-3 text-emerald-200">
+          <CheckCircle className="w-5 h-5 shrink-0 mt-0.5 text-emerald-400" />
+          <div>
+            <h4 className="font-bold text-white">Payment Redirected</h4>
+            <p className="text-sm mt-0.5">{info}</p>
           </div>
         </div>
       )}

@@ -165,9 +165,34 @@ app.post('/api/webhooks/paystack', express.raw({ type: 'application/json' }), as
   const data = payload.data;
   console.log(`[PAYSTACK WEBHOOK] Received event: ${event}`);
 
-  const storeId = data?.metadata?.store_id;
+  let storeId = data?.metadata?.store_id;
 
   try {
+    if (!storeId) {
+      const customerEmail = data?.customer?.email || data?.email;
+      if (customerEmail) {
+        const userRows = await query<{ id: string }>(
+          'SELECT id FROM neon_auth.user WHERE email = $1',
+          [customerEmail]
+        );
+        if (userRows.length > 0) {
+          const userId = userRows[0].id;
+          const storeRows = await query<{ id: string }>(
+            `SELECT s.id
+             FROM stores s
+             JOIN store_admins sa ON sa.store_id = s.id
+             WHERE sa.user_id = $1
+             LIMIT 1`,
+            [userId]
+          );
+          if (storeRows.length > 0) {
+            storeId = storeRows[0].id;
+            console.log(`[PAYSTACK WEBHOOK] Resolved storeId ${storeId} from customer email ${customerEmail}`);
+          }
+        }
+      }
+    }
+
     if (event === 'subscription.create' || event === 'subscription.enable') {
       const subCode = data.subscription_code;
       const custCode = data.customer?.customer_code;
@@ -184,13 +209,12 @@ app.post('/api/webhooks/paystack', express.raw({ type: 'application/json' }), as
           [subCode, custCode, storeId]
         );
       } else {
-        console.warn('[PAYSTACK WEBHOOK] No store_id found in metadata for subscription.create');
+        console.warn('[PAYSTACK WEBHOOK] No store_id found in metadata or email lookup for subscription.create');
       }
     } 
     else if (event === 'charge.success') {
-      const planCode = data.plan?.plan_code;
-      if (planCode && storeId) {
-        console.log(`[PAYSTACK WEBHOOK] Successful charge for plan ${planCode} on store ${storeId}`);
+      if (storeId) {
+        console.log(`[PAYSTACK WEBHOOK] Successful charge on store ${storeId}`);
         await query(
           `UPDATE stores 
            SET subscription_status = 'active',
@@ -198,6 +222,8 @@ app.post('/api/webhooks/paystack', express.raw({ type: 'application/json' }), as
            WHERE id = $1`,
           [storeId]
         );
+      } else {
+        console.warn('[PAYSTACK WEBHOOK] No store_id found in metadata or email lookup for charge.success');
       }
     }
     else if (event === 'subscription.disable') {
@@ -518,51 +544,8 @@ app.post('/api/admin/billing/subscribe', async (req: AuthedRequest, res, next) =
       return;
     }
 
-    const userRows = await query<{ email: string }>(
-      'SELECT email FROM neon_auth.user WHERE id = $1',
-      [req.userId]
-    );
-    const email = userRows[0]?.email;
-    if (!email) {
-      res.status(400).json({ error: 'User email not found' });
-      return;
-    }
-
-    const paystackSecret = env.paystackSecretKey;
-    const planCode = env.paystackPlanCode;
-
-    if (!paystackSecret || !planCode) {
-      res.status(500).json({ error: 'Paystack is not configured on the server' });
-      return;
-    }
-
-    const paystackResponse = await fetch('https://api.paystack.co/transaction/initialize', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${paystackSecret}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email,
-        plan: planCode,
-        metadata: {
-          store_id: store.id
-        }
-      })
-    });
-
-    const result: any = await paystackResponse.json();
-
-    if (!paystackResponse.ok || !result.status) {
-      console.error('[PAYSTACK ERROR]', result);
-      res.status(400).json({ error: result.message || 'Failed to initialize subscription' });
-      return;
-    }
-
     res.json({
-      authorization_url: result.data.authorization_url,
-      access_code: result.data.access_code,
-      reference: result.data.reference
+      authorization_url: 'https://paystack.shop/pay/p2din070oj'
     });
   } catch (error) {
     next(error);
