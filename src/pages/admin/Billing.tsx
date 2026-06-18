@@ -41,7 +41,7 @@ export function Billing() {
         return;
       }
       const script = document.createElement('script');
-      script.src = 'https://js.paystack.co/v1/inline.js';
+      script.src = 'https://js.paystack.co/v2/inline.js';
       script.async = true;
       script.onload = () => resolve(true);
       script.onerror = () => resolve(false);
@@ -62,11 +62,11 @@ export function Billing() {
 
       // 2. Initialize subscription on backend
       const data = await adminApi.subscribe();
+      console.log('[Paystack Setup] Resuming transaction with access_code:', data.access_code);
 
-      // 3. Open Paystack Inline Pop
-      // NOTE: When using access_code, do NOT also pass 'key' — Paystack rejects requests with both.
-      const handler = (window as any).PaystackPop.setup({
-        access_code: data.access_code,
+      // 3. Open Paystack Inline Pop V2
+      const popup = new (window as any).PaystackPop();
+      popup.resumeTransaction(data.access_code, {
         onSuccess: async (response: any) => {
           console.log('[Paystack Success]', response);
           // Wait 2 seconds for webhook processing, then refetch
@@ -80,7 +80,6 @@ export function Billing() {
           setSubmitting(false);
         }
       });
-      handler.openIframe();
     } catch (err: any) {
       console.error('[Billing] Subscription error:', err);
       setError(err.message || 'An error occurred while setting up subscription.');
