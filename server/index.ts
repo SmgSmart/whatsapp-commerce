@@ -612,12 +612,12 @@ app.post('/api/admin/billing/verify', async (req: AuthedRequest, res, next) => {
     });
 
     if (!response.ok) {
-      const errBody = await response.json().catch(() => ({}));
+      const errBody = (await response.json().catch(() => ({}))) as any;
       res.status(400).json({ error: errBody.message || 'Failed to verify transaction with Paystack.' });
       return;
     }
 
-    const payload = await response.json();
+    const payload = (await response.json()) as any;
     if (!payload.status || payload.data?.status !== 'success') {
       res.status(400).json({ error: 'Transaction was not successful or not found on Paystack.' });
       return;
