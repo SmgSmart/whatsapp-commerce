@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { adminApi } from '../../lib/api';
 import type { Product, Category } from '../../lib/types';
-import { Plus, Edit2, Trash2, X, Image as ImageIcon, Upload } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Image as ImageIcon, Upload, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useStorage } from '../../hooks/useStorage';
 import { money } from '../../lib/format';
 
@@ -15,6 +15,7 @@ export function ProductManager() {
     // Modal state
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+    const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -46,6 +47,7 @@ export function ProductManager() {
     }
 
     const openModal = (product?: Product) => {
+        setCurrentStep(1);
         if (product) {
             setEditingProduct(product);
             setFormData({
@@ -267,10 +269,56 @@ export function ProductManager() {
                             </button>
                         </div>
 
+                        {/* Progress Stepper */}
+                        <div className="px-6 py-4 bg-brand-dark/20 border-b border-brand-steel/10 flex items-center justify-between flex-shrink-0">
+                            {[
+                                { step: 1, label: 'Details' },
+                                { step: 2, label: 'Pricing' },
+                                { step: 3, label: 'Media' },
+                                { step: 4, label: 'Review' }
+                            ].map((s, idx, arr) => (
+                                <div key={s.step} className="flex items-center flex-1 last:flex-none">
+                                    <button
+                                        type="button"
+                                        disabled={s.step > currentStep && !editingProduct} // allow clicking steps if editing
+                                        onClick={() => {
+                                            // Validate before jumping
+                                            if (s.step === 2 && !formData.name.trim()) return;
+                                            if (s.step === 3 && (!formData.name.trim() || !formData.price || parseFloat(formData.price) < 0)) return;
+                                            if (s.step === 4 && (!formData.name.trim() || !formData.price || parseFloat(formData.price) < 0)) return;
+                                            setCurrentStep(s.step);
+                                        }}
+                                        className="flex items-center gap-2 group focus:outline-none"
+                                    >
+                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all border ${
+                                            currentStep === s.step
+                                                ? 'bg-brand-cream text-brand-dark border-brand-cream shadow-md shadow-brand-cream/10 scale-110'
+                                                : currentStep > s.step
+                                                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                                : 'bg-brand-steel/10 text-brand-slate border-brand-steel/15'
+                                        }`}>
+                                            {currentStep > s.step ? '✓' : s.step}
+                                        </div>
+                                        <span className={`text-xs font-bold transition-colors hidden sm:inline ${
+                                            currentStep === s.step ? 'text-white' : 'text-brand-slate group-hover:text-white'
+                                        }`}>
+                                            {s.label}
+                                        </span>
+                                    </button>
+                                    
+                                    {idx < arr.length - 1 && (
+                                        <div className={`flex-1 h-0.5 mx-4 transition-colors ${
+                                            currentStep > s.step ? 'bg-emerald-500/20' : 'bg-brand-steel/15'
+                                        }`} />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+
                         {/* Scrollable Form Content */}
                         <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-brand-steel/30 scrollbar-track-transparent">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-4 md:col-span-2">
+                            {currentStep === 1 && (
+                                <div className="space-y-6">
                                     <div>
                                         <label className="block text-sm font-semibold text-brand-slate mb-1.5">Product Name *</label>
                                         <input
@@ -288,14 +336,16 @@ export function ProductManager() {
                                         <textarea
                                             value={formData.description}
                                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                            rows={3}
+                                            rows={5}
                                             className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none resize-none transition-all hover:border-brand-steel/30"
-                                            placeholder="Describe your product..."
+                                            placeholder="Describe your product (features, materials, size, etc.)..."
                                         />
                                     </div>
                                 </div>
+                            )}
 
-                                <div className="space-y-4">
+                            {currentStep === 2 && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label className="block text-sm font-semibold text-brand-slate mb-1.5">Price (GHS) *</label>
                                         <input
@@ -324,7 +374,7 @@ export function ProductManager() {
                                         </select>
                                     </div>
 
-                                    <div className="pt-2">
+                                    <div className="md:col-span-2 pt-2">
                                         <label className="flex items-center gap-3 cursor-pointer select-none">
                                             <div className="relative">
                                                 <input
@@ -336,78 +386,171 @@ export function ProductManager() {
                                                 <div className={`block w-10 h-6 rounded-full transition-colors ${formData.in_stock ? 'bg-brand-cream' : 'bg-brand-steel/30'}`}></div>
                                                 <div className={`absolute left-1 top-1 bg-[#071739] w-4 h-4 rounded-full transition-transform ${formData.in_stock ? 'translate-x-4' : ''}`}></div>
                                             </div>
-                                            <span className="text-sm font-semibold text-brand-slate">In Stock</span>
+                                            <span className="text-sm font-semibold text-brand-slate">In Stock & Available for Order</span>
                                         </label>
                                     </div>
                                 </div>
+                            )}
 
-                                <div className="space-y-4">
+                            {currentStep === 3 && (
+                                <div className="space-y-6">
                                     <div>
-                                        <div>
-                                            <label className="block text-sm font-semibold text-brand-slate mb-1.5">Product Image *</label>
-                                            <div className="relative">
-                                                <input
-                                                    type="file"
-                                                    accept="image/*"
-                                                    onChange={handleImageUpload}
-                                                    className="hidden"
-                                                    id="product-image-upload"
-                                                />
-                                                <label
-                                                    htmlFor="product-image-upload"
-                                                    className="w-full px-4 py-3 bg-brand-steel/10 text-brand-cream rounded-xl hover:bg-brand-steel/20 cursor-pointer flex items-center justify-center gap-2 border-2 border-dashed border-brand-steel/20 font-bold transition-all hover:scale-[1.01] active:scale-[0.99]"
-                                                >
-                                                    <Upload size={20} />
-                                                    {uploading ? 'Uploading...' : 'Upload Image'}
-                                                </label>
+                                        <label className="block text-sm font-semibold text-brand-slate mb-1.5">Product Image *</label>
+                                        <div className="relative">
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                                className="hidden"
+                                                id="product-image-upload"
+                                            />
+                                            <label
+                                                htmlFor="product-image-upload"
+                                                className="w-full px-4 py-3 bg-brand-steel/10 text-brand-cream rounded-xl hover:bg-brand-steel/20 cursor-pointer flex items-center justify-center gap-2 border-2 border-dashed border-brand-steel/20 font-bold transition-all hover:scale-[1.01] active:scale-[0.99]"
+                                            >
+                                                <Upload size={20} />
+                                                {uploading ? 'Uploading...' : 'Upload Image'}
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    {/* Image Preview */}
+                                    <div className="border border-brand-steel/20 rounded-xl h-64 flex flex-col items-center justify-center overflow-hidden bg-brand-dark/45 relative">
+                                        {uploading && (
+                                            <div className="absolute inset-0 bg-[#071739]/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
+                                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-cream"></div>
+                                            </div>
+                                        )}
+                                        {formData.image_url ? (
+                                            <img
+                                                src={formData.image_url}
+                                                alt="Preview"
+                                                className="w-full h-full object-cover"
+                                                onError={(e) => {
+                                                    const target = e.target as HTMLImageElement;
+                                                    target.style.display = 'none';
+                                                }}
+                                            />
+                                        ) : (
+                                            <>
+                                                <ImageIcon className="w-12 h-12 text-brand-slate/50 mb-2" />
+                                                <span className="text-sm text-brand-slate/50 font-medium">No Image Uploaded Yet</span>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {currentStep === 4 && (
+                                <div className="space-y-6">
+                                    <div className="flex flex-col md:flex-row gap-6 items-center md:items-start bg-brand-steel/5 p-6 rounded-2xl border border-brand-steel/15">
+                                        {/* Card Mockup */}
+                                        <div className="w-64 bg-[#071739] border border-brand-steel/20 rounded-2xl overflow-hidden shadow-xl flex-shrink-0">
+                                            <div className="h-44 bg-brand-dark/50 relative overflow-hidden flex items-center justify-center border-b border-brand-steel/10">
+                                                {formData.image_url ? (
+                                                    <img src={formData.image_url} alt={formData.name} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <ImageIcon className="w-12 h-12 text-brand-slate/40" />
+                                                )}
+                                                {formData.in_stock ? (
+                                                    <span className="absolute top-3 right-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full">In Stock</span>
+                                                ) : (
+                                                    <span className="absolute top-3 right-3 bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full">Out of Stock</span>
+                                                )}
+                                            </div>
+                                            <div className="p-4 space-y-2">
+                                                <span className="text-[10px] font-semibold tracking-wider text-brand-cream uppercase">
+                                                    {categories.find(c => c.id === formData.category_id)?.name || 'Uncategorized'}
+                                                </span>
+                                                <h3 className="font-bold text-white text-sm truncate">{formData.name || 'Product Name'}</h3>
+                                                <p className="text-xs text-brand-slate line-clamp-2 min-h-[2rem]">{formData.description || 'No description provided.'}</p>
+                                                <div className="font-black text-brand-cream text-base pt-1">GHS {money(parseFloat(formData.price || '0'))}</div>
                                             </div>
                                         </div>
 
-                                        {/* Image Preview */}
-                                        <div className="mt-4 border border-brand-steel/20 rounded-xl h-44 flex flex-col items-center justify-center overflow-hidden bg-brand-dark/45 relative">
-                                            {uploading && (
-                                                <div className="absolute inset-0 bg-[#071739]/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
-                                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-cream"></div>
+                                        {/* Details Summary */}
+                                        <div className="flex-1 w-full space-y-4">
+                                            <h4 className="text-xs font-black uppercase tracking-wider text-brand-slate">Final Review</h4>
+                                            <div className="divide-y divide-brand-steel/15 text-sm">
+                                                <div className="py-2.5 flex justify-between gap-4">
+                                                    <span className="text-brand-slate">Product Name</span>
+                                                    <span className="text-white font-semibold text-right">{formData.name}</span>
                                                 </div>
-                                            )}
-                                            {formData.image_url ? (
-                                                <img
-                                                    src={formData.image_url}
-                                                    alt="Preview"
-                                                    className="w-full h-full object-cover"
-                                                    onError={(e) => {
-                                                        const target = e.target as HTMLImageElement;
-                                                        target.style.display = 'none';
-                                                    }}
-                                                />
-                                            ) : (
-                                                <>
-                                                    <ImageIcon className="w-8 h-8 text-brand-slate/50 mb-2" />
-                                                    <span className="text-sm text-brand-slate/50">No Image Selected</span>
-                                                </>
-                                            )}
+                                                <div className="py-2.5 flex justify-between gap-4">
+                                                    <span className="text-brand-slate">Price</span>
+                                                    <span className="text-brand-cream font-bold">GHS {money(parseFloat(formData.price || '0'))}</span>
+                                                </div>
+                                                <div className="py-2.5 flex justify-between gap-4">
+                                                    <span className="text-brand-slate">Category</span>
+                                                    <span className="text-white font-medium">{categories.find(c => c.id === formData.category_id)?.name || 'Uncategorized'}</span>
+                                                </div>
+                                                <div className="py-2.5 flex justify-between gap-4">
+                                                    <span className="text-brand-slate">Availability</span>
+                                                    <span className={formData.in_stock ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}>
+                                                        {formData.in_stock ? 'In Stock' : 'Out of Stock'}
+                                                    </span>
+                                                </div>
+                                                <div className="py-2.5 flex justify-between gap-4">
+                                                    <span className="text-brand-slate">Has Image</span>
+                                                    <span className={formData.image_url ? 'text-emerald-400 font-bold' : 'text-brand-slate'}>
+                                                        {formData.image_url ? 'Yes' : 'No'}
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
 
                         {/* Footer */}
-                        <div className="px-6 py-4 border-t border-brand-steel/15 flex justify-end gap-3 bg-brand-dark/40 flex-shrink-0">
-                            <button
-                                type="button"
-                                onClick={() => setIsModalOpen(false)}
-                                className="px-6 py-2.5 border border-brand-steel/20 text-brand-slate rounded-xl hover:bg-brand-steel/10 font-bold transition-colors hover:text-white"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                disabled={uploading}
-                                className="px-6 py-2.5 bg-brand-cream text-brand-dark rounded-xl hover:bg-white font-bold transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
-                            >
-                                {editingProduct ? 'Save Changes' : 'Create Product'}
-                            </button>
+                        <div className="px-6 py-4 border-t border-brand-steel/15 flex justify-between items-center bg-brand-dark/40 flex-shrink-0">
+                            <div>
+                                {currentStep > 1 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setCurrentStep(currentStep - 1)}
+                                        className="px-5 py-2.5 border border-brand-steel/20 text-brand-slate rounded-xl hover:bg-brand-steel/10 font-bold transition-colors flex items-center gap-1 hover:text-white"
+                                    >
+                                        <ChevronLeft size={16} />
+                                        Back
+                                    </button>
+                                )}
+                            </div>
+                            
+                            <div className="flex gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="px-5 py-2.5 border border-brand-steel/20 text-brand-slate rounded-xl hover:bg-brand-steel/10 font-bold transition-colors hover:text-white"
+                                >
+                                    Cancel
+                                </button>
+                                
+                                {currentStep < 4 ? (
+                                    <button
+                                        type="button"
+                                        disabled={
+                                            (currentStep === 1 && !formData.name.trim()) ||
+                                            (currentStep === 2 && (!formData.price || parseFloat(formData.price) < 0)) ||
+                                            uploading
+                                        }
+                                        onClick={() => setCurrentStep(currentStep + 1)}
+                                        className="px-5 py-2.5 bg-brand-cream text-brand-dark rounded-xl hover:bg-white font-bold transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 hover:scale-[1.02] active:scale-[0.98]"
+                                    >
+                                        Next
+                                        <ChevronRight size={16} />
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="submit"
+                                        disabled={uploading}
+                                        className="px-6 py-2.5 bg-brand-cream text-brand-dark rounded-xl hover:bg-white font-bold transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
+                                    >
+                                        {editingProduct ? 'Save Changes' : 'Create Product'}
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </form>
                 </div>
