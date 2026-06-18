@@ -17,6 +17,8 @@ export function Billing() {
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
+  const [verifyRef, setVerifyRef] = useState('');
+  const [verifying, setVerifying] = useState(false);
 
   useEffect(() => {
     loadBillingStatus();
@@ -109,6 +111,31 @@ export function Billing() {
       console.error('[Billing] Subscription error:', err);
       setError(err.message || 'An error occurred while setting up subscription.');
       setSubmitting(false);
+    }
+  };
+
+  const handleVerifyReference = async () => {
+    if (!verifyRef.trim()) return;
+    setError(null);
+    setInfo(null);
+    setVerifying(true);
+
+    try {
+      const res = await adminApi.verifySubscription(verifyRef.trim());
+      if (res.success) {
+        setInfo(res.message || 'Payment verified successfully! Your subscription is now active.');
+        setVerifyRef('');
+        const data = await adminApi.getBillingStatus();
+        setStatus(data);
+        await refetch();
+      } else {
+        setError(res.message || 'Failed to verify payment. Please check your reference and try again.');
+      }
+    } catch (err: any) {
+      console.error('[Billing Verify] Error:', err);
+      setError(err.message || 'Failed to verify payment reference. Please ensure it is a valid reference.');
+    } finally {
+      setVerifying(false);
     }
   };
 
@@ -286,6 +313,39 @@ export function Billing() {
         </div>
 
       </div>
+
+      {/* Verify Transaction Reference Fallback */}
+      {status?.subscription_status !== 'active' && (
+        <div className="mt-8 bg-brand-steel/10 rounded-3xl border border-brand-steel/15 p-6 backdrop-blur-md">
+          <h3 className="text-lg font-bold text-white mb-2">Already paid?</h3>
+          <p className="text-sm text-brand-slate mb-4">
+            If you have completed your payment on Paystack but your subscription status hasn't updated, please enter your transaction reference below to verify it manually.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input
+              type="text"
+              placeholder="e.g., T123456789012345"
+              value={verifyRef}
+              onChange={(e) => setVerifyRef(e.target.value)}
+              className="flex-1 bg-brand-dark/45 border border-brand-steel/20 rounded-2xl px-4 py-3 text-white text-sm placeholder:text-brand-slate/50 focus:outline-none focus:border-brand-cream/40"
+            />
+            <button
+              onClick={handleVerifyReference}
+              disabled={verifying || !verifyRef.trim()}
+              className="px-6 py-3 bg-brand-cream/10 border border-brand-cream/20 hover:bg-brand-cream/20 text-brand-cream font-bold rounded-2xl transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {verifying ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-brand-cream border-t-transparent"></div>
+                  <span>Verifying...</span>
+                </>
+              ) : (
+                'Verify Payment'
+              )}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -184,5 +184,13 @@ export const adminApi = {
     }>('/api/admin/billing/subscribe', {
       method: 'POST',
     }),
+  verifySubscription: (reference: string) =>
+    apiRequest<{
+      success: boolean;
+      message: string;
+    }>('/api/admin/billing/verify', {
+      method: 'POST',
+      body: { reference },
+    }),
 };
 

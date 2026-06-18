@@ -7,6 +7,11 @@ import { login, getSession, requireUser, rewriteRequestCookieHeader, rewriteResp
 import { env } from './env.js';
 import { query } from './db.js';
 
+// Ensure paystack_transaction_reference column exists in the database
+query('ALTER TABLE stores ADD COLUMN IF NOT EXISTS paystack_transaction_reference text')
+  .then(() => console.log('[DB Schema Check] paystack_transaction_reference column verified'))
+  .catch(err => console.error('[DB Schema Check] failed to verify/create column:', err));
+
 const app = express();
 app.set('trust proxy', true);
 
@@ -213,14 +218,16 @@ app.post('/api/webhooks/paystack', express.raw({ type: 'application/json' }), as
       }
     } 
     else if (event === 'charge.success') {
+      const reference = data?.reference || null;
       if (storeId) {
-        console.log(`[PAYSTACK WEBHOOK] Successful charge on store ${storeId}`);
+        console.log(`[PAYSTACK WEBHOOK] Successful charge on store ${storeId}, reference: ${reference}`);
         await query(
           `UPDATE stores 
            SET subscription_status = 'active',
+               paystack_transaction_reference = $1,
                trial_ends_at = NULL
-           WHERE id = $1`,
-          [storeId]
+           WHERE id = $2`,
+          [reference, storeId]
         );
       } else {
         console.warn('[PAYSTACK WEBHOOK] No store_id found in metadata or email lookup for charge.success');
@@ -544,8 +551,99 @@ app.post('/api/admin/billing/subscribe', async (req: AuthedRequest, res, next) =
       return;
     }
 
+    const userRows = await query<{ email: string }>(
+      'SELECT email FROM neon_auth.user WHERE id = $1',
+      [req.userId]
+    );
+    const email = userRows[0]?.email;
+    const baseUrl = 'https://paystack.shop/pay/p2din070oj';
+    const authorization_url = email 
+      ? `${baseUrl}?email=${encodeURIComponent(email)}` 
+      : baseUrl;
+
     res.json({
-      authorization_url: 'https://paystack.shop/pay/p2din070oj'
+      authorization_url
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post('/api/admin/billing/verify', async (req: AuthedRequest, res, next) => {
+  try {
+    const store = await requireAdminStore(req, res, true);
+    if (!store) return;
+
+    const { reference } = req.body;
+    if (!reference || typeof reference !== 'string') {
+      res.status(400).json({ error: 'Transaction reference is required' });
+      return;
+    }
+
+    // Check if this reference has already been claimed by another store
+    const existingReference = await query<any>(
+      'SELECT id, business_name FROM stores WHERE paystack_transaction_reference = $1',
+      [reference]
+    );
+
+    if (existingReference.length > 0) {
+      if (existingReference[0].id === store.id) {
+        res.json({ success: true, message: 'This payment has already been verified and applied to your store.' });
+      } else {
+        res.status(400).json({ error: 'This transaction reference has already been claimed by another store.' });
+      }
+      return;
+    }
+
+    // Call Paystack API to verify reference
+    const paystackSecret = env.paystackSecretKey;
+    if (!paystackSecret) {
+      res.status(500).json({ error: 'Paystack is not configured on the server.' });
+      return;
+    }
+
+    const verifyUrl = `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`;
+    const response = await fetch(verifyUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${paystackSecret}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      const errBody = await response.json().catch(() => ({}));
+      res.status(400).json({ error: errBody.message || 'Failed to verify transaction with Paystack.' });
+      return;
+    }
+
+    const payload = await response.json();
+    if (!payload.status || payload.data?.status !== 'success') {
+      res.status(400).json({ error: 'Transaction was not successful or not found on Paystack.' });
+      return;
+    }
+
+    const data = payload.data;
+    const subCode = data.subscription_code || data.subscription?.subscription_code || null;
+    const custCode = data.customer?.customer_code || null;
+
+    // Update store status to active and record the transaction reference
+    await query(
+      `UPDATE stores 
+       SET subscription_status = 'active',
+           paystack_subscription_code = COALESCE($1, paystack_subscription_code),
+           paystack_customer_code = COALESCE($2, paystack_customer_code),
+           paystack_transaction_reference = $3,
+           trial_ends_at = NULL
+       WHERE id = $4`,
+      [subCode, custCode, reference, store.id]
+    );
+
+    console.log(`[Billing Verify] Manual verification successful for store ${store.id}: reference=${reference}`);
+
+    res.json({
+      success: true,
+      message: 'Payment verified successfully! Your subscription is now active.'
     });
   } catch (error) {
     next(error);
