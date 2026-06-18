@@ -66,8 +66,23 @@ export function Billing() {
       const data = await adminApi.subscribe();
 
       if (data.authorization_url && !data.access_code) {
-        window.open(data.authorization_url, '_blank');
-        setInfo('Redirected to the hosted subscription payment page in a new tab. Please complete the subscription payment there. Once paid, refresh this page to update your status.');
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches 
+          || (window.navigator as any).standalone 
+          || document.referrer.includes('android-app://');
+
+        if (isStandalone) {
+          // In standalone app mode, redirect directly to prevent popup blocking
+          window.location.href = data.authorization_url;
+        } else {
+          // Standard browser: try opening a new tab
+          const opened = window.open(data.authorization_url, '_blank');
+          if (!opened) {
+            // Popup blocker active, fallback to direct redirect
+            window.location.href = data.authorization_url;
+          } else {
+            setInfo('Redirected to the hosted subscription payment page in a new tab. Please complete the subscription payment there. Once paid, refresh this page to update your status.');
+          }
+        }
         setSubmitting(false);
         return;
       }
