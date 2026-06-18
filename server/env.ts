@@ -31,6 +31,7 @@ export const env = {
   paystackPlanCode: process.env.PAYSTACK_PLAN_CODE,
   paystackWebhookSecret: process.env.PAYSTACK_WEBHOOK_SECRET,
   paystackPublicKey: process.env.VITE_PAYSTACK_PUBLIC_KEY,
+  paystackPaymentUrl: process.env.PAYSTACK_PAYMENT_URL || 'https://paystack.shop/pay/p2din070oj',
 };
 
 export function requireEnv(name: keyof typeof env) {

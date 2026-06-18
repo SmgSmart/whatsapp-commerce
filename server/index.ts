@@ -556,7 +556,7 @@ app.post('/api/admin/billing/subscribe', async (req: AuthedRequest, res, next) =
       [req.userId]
     );
     const email = userRows[0]?.email;
-    const baseUrl = 'https://paystack.shop/pay/p2din070oj';
+    const baseUrl = env.paystackPaymentUrl;
     const authorization_url = email 
       ? `${baseUrl}?email=${encodeURIComponent(email)}` 
       : baseUrl;
