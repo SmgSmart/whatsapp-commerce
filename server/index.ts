@@ -544,8 +544,6 @@ app.post('/api/admin/billing/subscribe', async (req: AuthedRequest, res, next) =
       },
       body: JSON.stringify({
         email,
-        amount: 20000,
-        currency: 'GHS',
         plan: planCode,
         metadata: {
           store_id: store.id
