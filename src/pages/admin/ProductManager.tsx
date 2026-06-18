@@ -248,21 +248,27 @@ export function ProductManager() {
 
             {/* Product Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
-                    <div className="bg-brand-dark border border-brand-steel/20 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden relative">
-                        <div className="px-6 py-4 border-b border-brand-steel/15 flex justify-between items-center bg-brand-dark/40">
-                            <h2 className="text-xl font-bold text-white">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <form
+                        onSubmit={handleSave}
+                        className="bg-brand-dark border border-brand-steel/20 rounded-3xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh] md:max-h-[85vh] overflow-hidden relative"
+                    >
+                        {/* Header */}
+                        <div className="px-6 py-4 border-b border-brand-steel/15 flex justify-between items-center bg-brand-dark/40 flex-shrink-0">
+                            <h2 className="text-xl font-bold text-white font-display">
                                 {editingProduct ? 'Edit Product' : 'Add New Product'}
                             </h2>
                             <button
+                                type="button"
                                 onClick={() => setIsModalOpen(false)}
-                                className="text-brand-slate hover:text-white transition-colors p-1"
+                                className="text-brand-slate hover:text-white transition-colors p-1 hover:scale-105 active:scale-95"
                             >
                                 <X size={24} />
                             </button>
                         </div>
 
-                        <form onSubmit={handleSave} className="p-6">
+                        {/* Scrollable Form Content */}
+                        <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-brand-steel/30 scrollbar-track-transparent">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-4 md:col-span-2">
                                     <div>
@@ -272,7 +278,7 @@ export function ProductManager() {
                                             required
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
+                                            className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all hover:border-brand-steel/30"
                                             placeholder="e.g., Wireless Headphones"
                                         />
                                     </div>
@@ -283,7 +289,7 @@ export function ProductManager() {
                                             value={formData.description}
                                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                             rows={3}
-                                            className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none resize-none"
+                                            className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none resize-none transition-all hover:border-brand-steel/30"
                                             placeholder="Describe your product..."
                                         />
                                     </div>
@@ -299,7 +305,7 @@ export function ProductManager() {
                                             min="0"
                                             value={formData.price}
                                             onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                                            className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
+                                            className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all hover:border-brand-steel/30"
                                             placeholder="0.00"
                                         />
                                     </div>
@@ -309,7 +315,7 @@ export function ProductManager() {
                                         <select
                                             value={formData.category_id}
                                             onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                                            className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
+                                            className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all hover:border-brand-steel/30"
                                         >
                                             <option value="" className="bg-[#071739]">Uncategorized</option>
                                             {categories.map(c => (
@@ -349,7 +355,7 @@ export function ProductManager() {
                                                 />
                                                 <label
                                                     htmlFor="product-image-upload"
-                                                    className="w-full px-4 py-3 bg-brand-steel/10 text-brand-cream rounded-xl hover:bg-brand-steel/20 cursor-pointer flex items-center justify-center gap-2 border-2 border-dashed border-brand-steel/20 font-bold transition-all"
+                                                    className="w-full px-4 py-3 bg-brand-steel/10 text-brand-cream rounded-xl hover:bg-brand-steel/20 cursor-pointer flex items-center justify-center gap-2 border-2 border-dashed border-brand-steel/20 font-bold transition-all hover:scale-[1.01] active:scale-[0.99]"
                                                 >
                                                     <Upload size={20} />
                                                     {uploading ? 'Uploading...' : 'Upload Image'}
@@ -358,7 +364,7 @@ export function ProductManager() {
                                         </div>
 
                                         {/* Image Preview */}
-                                        <div className="mt-4 border-2 border-dashed border-brand-steel/20 rounded-xl h-48 flex flex-col items-center justify-center overflow-hidden bg-brand-dark/45 relative">
+                                        <div className="mt-4 border border-brand-steel/20 rounded-xl h-44 flex flex-col items-center justify-center overflow-hidden bg-brand-dark/45 relative">
                                             {uploading && (
                                                 <div className="absolute inset-0 bg-[#071739]/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
                                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-cream"></div>
@@ -384,24 +390,26 @@ export function ProductManager() {
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div className="mt-8 pt-6 border-t border-brand-steel/15 flex justify-end gap-3">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsModalOpen(false)}
-                                    className="px-6 py-2 border border-brand-steel/20 text-brand-slate rounded-xl hover:bg-brand-steel/10 font-bold transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-6 py-2 bg-brand-cream text-brand-dark rounded-xl hover:bg-white font-bold transition-colors shadow-sm"
-                                >
-                                    {editingProduct ? 'Save Changes' : 'Create Product'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        {/* Footer */}
+                        <div className="px-6 py-4 border-t border-brand-steel/15 flex justify-end gap-3 bg-brand-dark/40 flex-shrink-0">
+                            <button
+                                type="button"
+                                onClick={() => setIsModalOpen(false)}
+                                className="px-6 py-2.5 border border-brand-steel/20 text-brand-slate rounded-xl hover:bg-brand-steel/10 font-bold transition-colors hover:text-white"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={uploading}
+                                className="px-6 py-2.5 bg-brand-cream text-brand-dark rounded-xl hover:bg-white font-bold transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
+                            >
+                                {editingProduct ? 'Save Changes' : 'Create Product'}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             )}
         </div>
