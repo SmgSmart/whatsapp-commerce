@@ -58,13 +58,7 @@ export function Billing() {
     setSubmitting(true);
 
     try {
-      // 1. Load Paystack Inline script
-      const scriptLoaded = await loadPaystackScript();
-      if (!scriptLoaded) {
-        throw new Error('Failed to load Paystack payment gateway. Please check your internet connection.');
-      }
-
-      // 2. Initialize subscription on backend
+      // 1. Initialize subscription on backend
       const data = await adminApi.subscribe();
 
       if (data.authorization_url && !data.access_code) {
@@ -90,6 +84,12 @@ export function Billing() {
       }
 
       console.log('[Paystack Setup] Resuming transaction with access_code:', data.access_code);
+
+      // 2. Load Paystack Inline script (only needed if using popup/inline flow)
+      const scriptLoaded = await loadPaystackScript();
+      if (!scriptLoaded) {
+        throw new Error('Failed to load Paystack payment gateway. Please check your internet connection.');
+      }
 
       // 3. Open Paystack Inline Pop V2
       const popup = new (window as any).PaystackPop();

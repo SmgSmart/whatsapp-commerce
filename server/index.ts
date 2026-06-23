@@ -557,9 +557,20 @@ app.post('/api/admin/billing/subscribe', async (req: AuthedRequest, res, next) =
     );
     const email = userRows[0]?.email;
     const baseUrl = env.paystackPaymentUrl;
+    
+    console.log(`[Billing Subscribe] Store ${store.id} requesting subscription link. Base URL: ${baseUrl}, User Email: ${email}`);
+
+    if (!baseUrl) {
+      console.error('[Billing Subscribe] env.paystackPaymentUrl is not configured');
+      res.status(500).json({ error: 'Paystack payment page URL is not configured on the server.' });
+      return;
+    }
+
     const authorization_url = email 
       ? `${baseUrl}?email=${encodeURIComponent(email)}` 
       : baseUrl;
+
+    console.log(`[Billing Subscribe] Returning redirect URL: ${authorization_url}`);
 
     res.json({
       authorization_url
@@ -597,12 +608,14 @@ app.post('/api/admin/billing/verify', async (req: AuthedRequest, res, next) => {
 
     // Call Paystack API to verify reference
     const paystackSecret = env.paystackSecretKey;
-    if (!paystackSecret) {
-      res.status(500).json({ error: 'Paystack is not configured on the server.' });
+    if (!paystackSecret || paystackSecret === 'sk_test_placeholder_value') {
+      console.error('[Billing Verify] Paystack secret key is missing or set to placeholder value.');
+      res.status(500).json({ error: 'Paystack is not configured correctly on the server.' });
       return;
     }
 
     const verifyUrl = `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`;
+    console.log(`[Billing Verify] Calling Paystack to verify reference: ${reference}`);
     const response = await fetch(verifyUrl, {
       method: 'GET',
       headers: {
@@ -613,11 +626,13 @@ app.post('/api/admin/billing/verify', async (req: AuthedRequest, res, next) => {
 
     if (!response.ok) {
       const errBody = (await response.json().catch(() => ({}))) as any;
+      console.error('[Billing Verify] Paystack returned error status:', response.status, errBody);
       res.status(400).json({ error: errBody.message || 'Failed to verify transaction with Paystack.' });
       return;
     }
 
     const payload = (await response.json()) as any;
+    console.log('[Billing Verify] Paystack response payload status:', payload.status, 'data status:', payload.data?.status);
     if (!payload.status || payload.data?.status !== 'success') {
       res.status(400).json({ error: 'Transaction was not successful or not found on Paystack.' });
       return;
