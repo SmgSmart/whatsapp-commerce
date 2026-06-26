@@ -614,6 +614,9 @@ app.post('/api/admin/billing/verify', async (req: AuthedRequest, res, next) => {
       return;
     }
 
+    const maskedKey = `${paystackSecret.substring(0, 10)}...${paystackSecret.substring(paystackSecret.length - 4)}`;
+    console.log(`[Billing Verify] Active Paystack Secret Key: ${maskedKey}`);
+
     const verifyUrl = `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`;
     console.log(`[Billing Verify] Calling Paystack to verify reference: ${reference}`);
     const response = await fetch(verifyUrl, {
