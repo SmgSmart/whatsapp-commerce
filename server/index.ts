@@ -465,14 +465,44 @@ app.post('/api/admin/stores', async (req: AuthedRequest, res, next) => {
       return;
     }
 
-    const { slug, business_name, whatsapp_number } = req.body;
+    const { 
+      slug, 
+      business_name, 
+      whatsapp_number,
+      tagline,
+      location,
+      facebook_url,
+      instagram_url,
+      logo_url,
+      hero_banner_url
+    } = req.body;
+
+    let formattedWhatsapp = whatsapp_number ? String(whatsapp_number).replace(/[^0-9]/g, '') : '';
+    if (formattedWhatsapp.startsWith('0')) {
+      formattedWhatsapp = '233' + formattedWhatsapp.slice(1);
+    }
 
     // 1. Create the store
     const storeRows = await query<any>(
-      `INSERT INTO stores (owner_id, slug, business_name, whatsapp_number)
-       VALUES ($1, $2, $3, $4)
+      `INSERT INTO stores (
+         owner_id, slug, business_name, whatsapp_number,
+         tagline, location, facebook_url, instagram_url,
+         logo_url, hero_banner_url
+       )
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
        RETURNING *`,
-      [req.userId, slug, business_name, whatsapp_number]
+      [
+        req.userId, 
+        slug, 
+        business_name, 
+        formattedWhatsapp,
+        tagline || null,
+        location || null,
+        facebook_url || null,
+        instagram_url || null,
+        logo_url || null,
+        hero_banner_url || null
+      ]
     );
     const store = storeRows[0];
 
@@ -674,6 +704,11 @@ app.put('/api/admin/store', async (req: AuthedRequest, res, next) => {
     if (!store) return;
 
     const payload = req.body;
+    let formattedWhatsapp = payload.whatsapp_number ? String(payload.whatsapp_number).replace(/[^0-9]/g, '') : '';
+    if (formattedWhatsapp.startsWith('0')) {
+      formattedWhatsapp = '233' + formattedWhatsapp.slice(1);
+    }
+
     const rows = await query<any>(
       `UPDATE stores
        SET business_name = $1,
@@ -688,7 +723,7 @@ app.put('/api/admin/store', async (req: AuthedRequest, res, next) => {
        RETURNING *`,
       [
         payload.business_name,
-        payload.whatsapp_number,
+        formattedWhatsapp,
         payload.tagline || null,
         payload.logo_url || null,
         payload.hero_banner_url || null,
