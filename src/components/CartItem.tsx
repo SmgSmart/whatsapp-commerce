@@ -24,7 +24,7 @@ export function CartItemComponent({ item, onUpdateQuantity, onRemove }: CartItem
       </div>
 
       <div className="flex-1 min-w-0">
-        <h3 className="font-semibold text-white text-sm truncate">
+        <h3 className="font-semibold text-brand-header text-sm truncate">
           {item.name}
         </h3>
         <p className="text-brand-cream font-bold text-sm mt-1">
@@ -48,16 +48,16 @@ export function CartItemComponent({ item, onUpdateQuantity, onRemove }: CartItem
             onClick={() =>
               onUpdateQuantity(item.id, Math.max(1, item.cartQuantity - 1))
             }
-            className="p-1 hover:bg-brand-steel/30 text-white transition-colors"
+            className="p-1 hover:bg-brand-steel/30 text-brand-header transition-colors"
           >
             <Minus size={14} />
           </button>
-          <span className="w-6 text-center text-sm font-medium text-white">
+          <span className="w-6 text-center text-sm font-medium text-brand-header">
             {item.cartQuantity}
           </span>
           <button
             onClick={() => onUpdateQuantity(item.id, item.cartQuantity + 1)}
-            className="p-1 hover:bg-brand-steel/30 text-white transition-colors"
+            className="p-1 hover:bg-brand-steel/30 text-brand-header transition-colors"
           >
             <Plus size={14} />
           </button>

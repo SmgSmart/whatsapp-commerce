@@ -2,16 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Dark mode by default */
+  --color-brand-dark: #071739;
+  --color-brand-steel: #4B6382;
+  --color-brand-slate: #A4B5C4;
+  --color-brand-gray: #CDD5DB;
+  --color-brand-bronze: #A68868;
+  --color-brand-cream: #E3C39D;
+  --color-text-header: #ffffff;
+  
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(75, 99, 130, 0.3);
+  --scrollbar-thumb-hover: rgba(227, 195, 157, 0.5);
+  
+  color-scheme: dark;
+}
+
+html.light {
+  /* Light mode variables */
+  --color-brand-dark: #f8fafc;       /* Slate-50 background */
+  --color-brand-steel: #e2e8f0;      /* Slate-200 border */
+  --color-brand-slate: #64748b;      /* Slate-500 secondary/muted text */
+  --color-brand-gray: #334155;       /* Slate-700 body text */
+  --color-brand-bronze: #7c2d12;     /* Amber-900 / dark bronze for contrast text */
+  --color-brand-cream: #d97706;      /* Amber-600 for gold accent on light bg */
+  --color-text-header: #0f172a;      /* Slate-900 header text */
+  
+  --scrollbar-thumb: rgba(100, 116, 139, 0.2);
+  --scrollbar-thumb-hover: rgba(100, 116, 139, 0.4);
+  
+  color-scheme: light;
+}
+
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background-color: #071739;
-  color: #CDD5DB;
+  background-color: var(--color-brand-dark);
+  color: var(--color-brand-gray);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Outfit', sans-serif;
+  color: var(--color-text-header);
+  transition: color 0.2s ease;
 }
 
 /* Custom premium scrollbar */
@@ -20,14 +56,15 @@ h1, h2, h3, h4, h5, h6 {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--scrollbar-track, transparent);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(75, 99, 130, 0.3); /* brand-steel */
+  background: var(--scrollbar-thumb);
   border-radius: 9999px;
+  transition: background-color 0.2s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(227, 195, 157, 0.5); /* brand-cream */
+  background: var(--scrollbar-thumb-hover);
 }
 
 @keyframes pulse-slow {

@@ -151,7 +151,7 @@ export function ProductManager() {
         <div className="p-6 md:p-8 max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold text-white">Products</h1>
+                    <h1 className="text-2xl font-bold text-brand-header">Products</h1>
                     <p className="text-brand-slate mt-1">Manage your store inventory</p>
                 </div>
                 <button
@@ -192,7 +192,7 @@ export function ProductManager() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <div className="font-semibold text-white">{product.name}</div>
+                                            <div className="font-semibold text-brand-header">{product.name}</div>
                                             <div className="text-xs text-brand-slate truncate max-w-xs mt-0.5">{product.description || 'No description'}</div>
                                         </td>
                                         <td className="px-6 py-4">
@@ -257,13 +257,13 @@ export function ProductManager() {
                     >
                         {/* Header */}
                         <div className="px-6 py-4 border-b border-brand-steel/15 flex justify-between items-center bg-brand-dark/40 flex-shrink-0">
-                            <h2 className="text-xl font-bold text-white font-display">
+                            <h2 className="text-xl font-bold text-brand-header font-display">
                                 {editingProduct ? 'Edit Product' : 'Add New Product'}
                             </h2>
                             <button
                                 type="button"
                                 onClick={() => setIsModalOpen(false)}
-                                className="text-brand-slate hover:text-white transition-colors p-1 hover:scale-105 active:scale-95"
+                                className="text-brand-slate hover:text-brand-header transition-colors p-1 hover:scale-105 active:scale-95"
                             >
                                 <X size={24} />
                             </button>
@@ -300,7 +300,7 @@ export function ProductManager() {
                                             {currentStep > s.step ? '✓' : s.step}
                                         </div>
                                         <span className={`text-xs font-bold transition-colors hidden sm:inline ${
-                                            currentStep === s.step ? 'text-white' : 'text-brand-slate group-hover:text-white'
+                                            currentStep === s.step ? 'text-brand-header' : 'text-brand-slate group-hover:text-brand-header'
                                         }`}>
                                             {s.label}
                                         </span>
@@ -326,7 +326,7 @@ export function ProductManager() {
                                             required
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all hover:border-brand-steel/30"
+                                            className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-brand-header rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all hover:border-brand-steel/30"
                                             placeholder="e.g., Wireless Headphones"
                                         />
                                     </div>
@@ -337,7 +337,7 @@ export function ProductManager() {
                                             value={formData.description}
                                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                             rows={5}
-                                            className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none resize-none transition-all hover:border-brand-steel/30"
+                                            className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-brand-header rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none resize-none transition-all hover:border-brand-steel/30"
                                             placeholder="Describe your product (features, materials, size, etc.)..."
                                         />
                                     </div>
@@ -355,7 +355,7 @@ export function ProductManager() {
                                             min="0"
                                             value={formData.price}
                                             onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                                            className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all hover:border-brand-steel/30"
+                                            className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-brand-header rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all hover:border-brand-steel/30"
                                             placeholder="0.00"
                                         />
                                     </div>
@@ -365,11 +365,11 @@ export function ProductManager() {
                                         <select
                                             value={formData.category_id}
                                             onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                                            className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all hover:border-brand-steel/30"
+                                            className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-brand-header rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all hover:border-brand-steel/30"
                                         >
-                                            <option value="" className="bg-[#071739]">Uncategorized</option>
+                                            <option value="" className="bg-brand-dark">Uncategorized</option>
                                             {categories.map(c => (
-                                                <option key={c.id} value={c.id} className="bg-[#071739]">{c.name}</option>
+                                                <option key={c.id} value={c.id} className="bg-brand-dark">{c.name}</option>
                                             ))}
                                         </select>
                                     </div>
@@ -384,7 +384,7 @@ export function ProductManager() {
                                                     onChange={(e) => setFormData({ ...formData, in_stock: e.target.checked })}
                                                 />
                                                 <div className={`block w-10 h-6 rounded-full transition-colors ${formData.in_stock ? 'bg-brand-cream' : 'bg-brand-steel/30'}`}></div>
-                                                <div className={`absolute left-1 top-1 bg-[#071739] w-4 h-4 rounded-full transition-transform ${formData.in_stock ? 'translate-x-4' : ''}`}></div>
+                                                <div className={`absolute left-1 top-1 bg-brand-dark w-4 h-4 rounded-full transition-transform ${formData.in_stock ? 'translate-x-4' : ''}`}></div>
                                             </div>
                                             <span className="text-sm font-semibold text-brand-slate">In Stock & Available for Order</span>
                                         </label>
@@ -417,7 +417,7 @@ export function ProductManager() {
                                     {/* Image Preview */}
                                     <div className="border border-brand-steel/20 rounded-xl h-64 flex flex-col items-center justify-center overflow-hidden bg-brand-dark/45 relative">
                                         {uploading && (
-                                            <div className="absolute inset-0 bg-[#071739]/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
+                                            <div className="absolute inset-0 bg-brand-dark/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
                                                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-cream"></div>
                                             </div>
                                         )}
@@ -445,7 +445,7 @@ export function ProductManager() {
                                 <div className="space-y-6">
                                     <div className="flex flex-col md:flex-row gap-6 items-center md:items-start bg-brand-steel/5 p-6 rounded-2xl border border-brand-steel/15">
                                         {/* Card Mockup */}
-                                        <div className="w-64 bg-[#071739] border border-brand-steel/20 rounded-2xl overflow-hidden shadow-xl flex-shrink-0">
+                                        <div className="w-64 bg-brand-dark border border-brand-steel/20 rounded-2xl overflow-hidden shadow-xl flex-shrink-0">
                                             <div className="h-44 bg-brand-dark/50 relative overflow-hidden flex items-center justify-center border-b border-brand-steel/10">
                                                 {formData.image_url ? (
                                                     <img src={formData.image_url} alt={formData.name} className="w-full h-full object-cover" />
@@ -462,7 +462,7 @@ export function ProductManager() {
                                                 <span className="text-[10px] font-semibold tracking-wider text-brand-cream uppercase">
                                                     {categories.find(c => c.id === formData.category_id)?.name || 'Uncategorized'}
                                                 </span>
-                                                <h3 className="font-bold text-white text-sm truncate">{formData.name || 'Product Name'}</h3>
+                                                <h3 className="font-bold text-brand-header text-sm truncate">{formData.name || 'Product Name'}</h3>
                                                 <p className="text-xs text-brand-slate line-clamp-2 min-h-[2rem]">{formData.description || 'No description provided.'}</p>
                                                 <div className="font-black text-brand-cream text-base pt-1">GHS {money(parseFloat(formData.price || '0'))}</div>
                                             </div>
@@ -474,7 +474,7 @@ export function ProductManager() {
                                             <div className="divide-y divide-brand-steel/15 text-sm">
                                                 <div className="py-2.5 flex justify-between gap-4">
                                                     <span className="text-brand-slate">Product Name</span>
-                                                    <span className="text-white font-semibold text-right">{formData.name}</span>
+                                                    <span className="text-brand-header font-semibold text-right">{formData.name}</span>
                                                 </div>
                                                 <div className="py-2.5 flex justify-between gap-4">
                                                     <span className="text-brand-slate">Price</span>
@@ -482,7 +482,7 @@ export function ProductManager() {
                                                 </div>
                                                 <div className="py-2.5 flex justify-between gap-4">
                                                     <span className="text-brand-slate">Category</span>
-                                                    <span className="text-white font-medium">{categories.find(c => c.id === formData.category_id)?.name || 'Uncategorized'}</span>
+                                                    <span className="text-brand-header font-medium">{categories.find(c => c.id === formData.category_id)?.name || 'Uncategorized'}</span>
                                                 </div>
                                                 <div className="py-2.5 flex justify-between gap-4">
                                                     <span className="text-brand-slate">Availability</span>
@@ -510,7 +510,7 @@ export function ProductManager() {
                                     <button
                                         type="button"
                                         onClick={() => setCurrentStep(currentStep - 1)}
-                                        className="px-5 py-2.5 border border-brand-steel/20 text-brand-slate rounded-xl hover:bg-brand-steel/10 font-bold transition-colors flex items-center gap-1 hover:text-white"
+                                        className="px-5 py-2.5 border border-brand-steel/20 text-brand-slate rounded-xl hover:bg-brand-steel/10 font-bold transition-colors flex items-center gap-1 hover:text-brand-header"
                                     >
                                         <ChevronLeft size={16} />
                                         Back
@@ -522,7 +522,7 @@ export function ProductManager() {
                                 <button
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="px-5 py-2.5 border border-brand-steel/20 text-brand-slate rounded-xl hover:bg-brand-steel/10 font-bold transition-colors hover:text-white"
+                                    className="px-5 py-2.5 border border-brand-steel/20 text-brand-slate rounded-xl hover:bg-brand-steel/10 font-bold transition-colors hover:text-brand-header"
                                 >
                                     Cancel
                                 </button>

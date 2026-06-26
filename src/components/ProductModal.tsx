@@ -23,10 +23,10 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/70 backdrop-blur-sm overflow-y-auto">
-            <div className="bg-[#071739]/95 backdrop-blur-md rounded-2xl border border-brand-steel/20 shadow-2xl w-full max-w-3xl overflow-hidden relative flex flex-col md:flex-row">
+            <div className="bg-brand-dark/95 backdrop-blur-md rounded-2xl border border-brand-steel/20 shadow-2xl w-full max-w-3xl overflow-hidden relative flex flex-col md:flex-row">
                 <button
                     onClick={onClose}
-                    className="absolute right-4 top-4 p-2 bg-brand-dark/80 hover:bg-brand-steel/30 rounded-full transition-colors z-10 text-white border border-brand-steel/10"
+                    className="absolute right-4 top-4 p-2 bg-brand-dark/80 hover:bg-brand-steel/30 rounded-full transition-colors z-10 text-brand-header border border-brand-steel/10"
                     aria-label="Close modal"
                 >
                     <X size={24} />
@@ -53,7 +53,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
 
                 <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col">
                     <div className="mb-4">
-                        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                        <h2 className="text-2xl md:text-3xl font-bold text-brand-header mb-2">
                             {product.name}
                         </h2>
                         <div className="text-3xl font-bold text-brand-cream">
@@ -77,7 +77,7 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                    className="w-10 h-10 rounded-full bg-brand-steel/20 border border-brand-steel/30 flex items-center justify-center text-white hover:bg-brand-steel/40 transition-colors shadow-sm"
+                                    className="w-10 h-10 rounded-full bg-brand-steel/20 border border-brand-steel/30 flex items-center justify-center text-brand-header hover:bg-brand-steel/40 transition-colors shadow-sm"
                                     aria-label="Decrease quantity"
                                     type="button"
                                 >
@@ -88,12 +88,12 @@ export function ProductModal({ product, isOpen, onClose, onAddToCart }: ProductM
                                     id="quantity"
                                     value={quantity}
                                     onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                                    className="w-16 h-10 text-center text-lg font-semibold bg-brand-dark border border-brand-steel/40 text-white rounded-lg focus:ring-2 focus:ring-brand-cream outline-none shadow-sm"
+                                    className="w-16 h-10 text-center text-lg font-semibold bg-brand-dark border border-brand-steel/40 text-brand-header rounded-lg focus:ring-2 focus:ring-brand-cream outline-none shadow-sm"
                                     min="1"
                                 />
                                 <button
                                     onClick={() => setQuantity(quantity + 1)}
-                                    className="w-10 h-10 rounded-full bg-brand-steel/20 border border-brand-steel/30 flex items-center justify-center text-white hover:bg-brand-steel/40 transition-colors shadow-sm"
+                                    className="w-10 h-10 rounded-full bg-brand-steel/20 border border-brand-steel/30 flex items-center justify-center text-brand-header hover:bg-brand-steel/40 transition-colors shadow-sm"
                                     aria-label="Increase quantity"
                                     type="button"
                                 >

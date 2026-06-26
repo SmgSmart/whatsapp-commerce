@@ -153,7 +153,7 @@ export function Billing() {
   return (
     <div className="p-6 md:p-8 max-w-4xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-white tracking-tight font-display">Billing & Plan</h1>
+        <h1 className="text-3xl font-extrabold text-brand-header tracking-tight font-display">Billing & Plan</h1>
         <p className="text-brand-slate mt-2">Manage your premium SaaS store subscription</p>
       </div>
 
@@ -161,7 +161,7 @@ export function Billing() {
         <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-start gap-3 text-red-200">
           <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5 text-red-400" />
           <div>
-            <h4 className="font-bold text-white">Action Required</h4>
+            <h4 className="font-bold text-brand-header">Action Required</h4>
             <p className="text-sm mt-0.5">{error}</p>
           </div>
         </div>
@@ -171,7 +171,7 @@ export function Billing() {
         <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-start gap-3 text-emerald-200">
           <CheckCircle className="w-5 h-5 shrink-0 mt-0.5 text-emerald-400" />
           <div>
-            <h4 className="font-bold text-white">Payment Redirected</h4>
+            <h4 className="font-bold text-brand-header">Payment Redirected</h4>
             <p className="text-sm mt-0.5">{info}</p>
           </div>
         </div>
@@ -188,7 +188,7 @@ export function Billing() {
                 <span className="px-3 py-1 text-xs font-bold bg-brand-cream/10 text-brand-cream border border-brand-cream/20 rounded-full uppercase tracking-wider">
                   {isTrial ? 'Trial Version' : 'Professional Plan'}
                 </span>
-                <h2 className="text-2xl font-bold text-white mt-3">WhatsApp Premium Merchant</h2>
+                <h2 className="text-2xl font-bold text-brand-header mt-3">WhatsApp Premium Merchant</h2>
               </div>
               <div className="text-right">
                 <span className="text-3xl font-extrabold text-brand-cream font-display">GHS 200</span>
@@ -252,7 +252,7 @@ export function Billing() {
         {/* Subscription Status Details */}
         <div className="bg-brand-steel/10 rounded-3xl border border-brand-steel/15 p-6 backdrop-blur-md flex flex-col justify-between">
           <div>
-            <h3 className="text-lg font-bold text-white mb-6">Status Overview</h3>
+            <h3 className="text-lg font-bold text-brand-header mb-6">Status Overview</h3>
 
             <div className="space-y-6">
               {/* Account Status Detail */}
@@ -260,7 +260,7 @@ export function Billing() {
                 <span className="text-xs text-brand-slate block font-semibold uppercase tracking-wider">Account Status</span>
                 <div className="flex items-center gap-2 mt-2">
                   <span className={`w-2.5 h-2.5 rounded-full ${status?.is_active ? 'bg-emerald-500' : 'bg-red-500'}`}></span>
-                  <span className="font-bold text-white capitalize">
+                  <span className="font-bold text-brand-header capitalize">
                     {status?.subscription_status === 'trialing' ? 'Free Trial' : status?.subscription_status || 'Inactive'}
                   </span>
                 </div>
@@ -274,7 +274,7 @@ export function Billing() {
                   </span>
                   <div className="flex items-center gap-2.5 mt-2">
                     <Clock className={`w-5 h-5 ${isExpired ? 'text-red-400' : 'text-brand-cream'}`} />
-                    <span className="font-extrabold text-white text-lg font-display">
+                    <span className="font-extrabold text-brand-header text-lg font-display">
                       {status.days_left} {status.days_left === 1 ? 'day' : 'days'} left
                     </span>
                   </div>
@@ -317,7 +317,7 @@ export function Billing() {
       {/* Verify Transaction Reference Fallback */}
       {status?.subscription_status !== 'active' && (
         <div className="mt-8 bg-brand-steel/10 rounded-3xl border border-brand-steel/15 p-6 backdrop-blur-md">
-          <h3 className="text-lg font-bold text-white mb-2">Already paid?</h3>
+          <h3 className="text-lg font-bold text-brand-header mb-2">Already paid?</h3>
           <p className="text-sm text-brand-slate mb-4">
             If you have completed your payment on Paystack but your subscription status hasn't updated, please enter your transaction reference below to verify it manually.
           </p>
@@ -327,7 +327,7 @@ export function Billing() {
               placeholder="e.g., T123456789012345"
               value={verifyRef}
               onChange={(e) => setVerifyRef(e.target.value)}
-              className="flex-1 bg-brand-dark/45 border border-brand-steel/20 rounded-2xl px-4 py-3 text-white text-sm placeholder:text-brand-slate/50 focus:outline-none focus:border-brand-cream/40"
+              className="flex-1 bg-brand-dark/45 border border-brand-steel/20 rounded-2xl px-4 py-3 text-brand-header text-sm placeholder:text-brand-slate/50 focus:outline-none focus:border-brand-cream/40"
             />
             <button
               onClick={handleVerifyReference}

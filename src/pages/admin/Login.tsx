@@ -167,13 +167,13 @@ export function Login() {
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="w-full max-w-md bg-brand-steel/10 border border-brand-steel/15 text-white backdrop-blur-md rounded-[24px] shadow-2xl p-8 sm:p-10 relative z-10"
+                className="w-full max-w-md bg-brand-steel/10 border border-brand-steel/15 text-brand-header backdrop-blur-md rounded-[24px] shadow-2xl p-8 sm:p-10 relative z-10"
             >
                 <div className="flex flex-col items-center justify-center mb-8 text-center">
                     <div className="w-16 h-16 bg-gradient-to-br from-brand-steel/30 to-brand-cream/20 rounded-2xl flex items-center justify-center mb-6 shadow-lg border border-brand-steel/30 rotate-3">
                         <Store className="w-8 h-8 text-brand-cream -rotate-3" />
                     </div>
-                    <h1 className="text-3xl font-extrabold text-white tracking-tight">
+                    <h1 className="text-3xl font-extrabold text-brand-header tracking-tight">
                         {showOtp ? 'Check your email' : isSignUp ? 'Create Account' : 'Welcome Back'}
                     </h1>
                     <p className="text-brand-slate mt-2 text-md">
@@ -217,7 +217,7 @@ export function Login() {
                                                 onChange={(e) => setName(e.target.value)}
                                                 required={isSignUp}
                                                 placeholder="John Doe"
-                                                className="w-full pl-10 pr-4 py-3 bg-brand-dark/45 border border-brand-steel/20 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all text-white placeholder-brand-slate/30"
+                                                className="w-full pl-10 pr-4 py-3 bg-brand-dark/45 border border-brand-steel/20 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all text-brand-header placeholder-brand-slate/30"
                                             />
                                         </div>
                                     </motion.div>
@@ -236,7 +236,7 @@ export function Login() {
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
                                         placeholder="you@example.com"
-                                        className="w-full pl-10 pr-4 py-3 bg-brand-dark/45 border border-brand-steel/20 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all text-white placeholder-brand-slate/30"
+                                        className="w-full pl-10 pr-4 py-3 bg-brand-dark/45 border border-brand-steel/20 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all text-brand-header placeholder-brand-slate/30"
                                     />
                                 </div>
                             </div>
@@ -254,7 +254,7 @@ export function Login() {
                                         required
                                         minLength={8}
                                         placeholder="••••••••"
-                                        className="w-full pl-10 pr-4 py-3 bg-brand-dark/45 border border-brand-steel/20 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all text-white placeholder-brand-slate/30"
+                                        className="w-full pl-10 pr-4 py-3 bg-brand-dark/45 border border-brand-steel/20 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all text-brand-header placeholder-brand-slate/30"
                                     />
                                 </div>
                             </div>
@@ -294,7 +294,7 @@ export function Login() {
                                     required
                                     maxLength={6}
                                     placeholder="000000"
-                                    className="w-full px-4 py-4 bg-brand-dark/45 border border-brand-steel/20 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all text-white text-center text-3xl tracking-widest font-bold font-mono placeholder-brand-slate/20"
+                                    className="w-full px-4 py-4 bg-brand-dark/45 border border-brand-steel/20 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all text-brand-header text-center text-3xl tracking-widest font-bold font-mono placeholder-brand-slate/20"
                                 />
                             </div>
 
@@ -315,7 +315,7 @@ export function Login() {
                                     type="button"
                                     disabled={resendCountdown > 0 || resendLoading}
                                     onClick={handleResendOtp}
-                                    className="text-sm font-semibold text-brand-cream hover:text-white disabled:text-gray-500 transition-colors flex items-center justify-center gap-1.5 cursor-pointer disabled:cursor-not-allowed"
+                                    className="text-sm font-semibold text-brand-cream hover:text-brand-header disabled:text-gray-500 transition-colors flex items-center justify-center gap-1.5 cursor-pointer disabled:cursor-not-allowed"
                                 >
                                     {resendLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                                     {resendCountdown > 0 ? `Resend Code (${resendCountdown}s)` : 'Resend Code'}
@@ -332,7 +332,7 @@ export function Login() {
                                             console.error('Error signing out on back:', e);
                                         }
                                     }}
-                                    className="text-sm font-semibold text-brand-slate hover:text-white transition-colors"
+                                    className="text-sm font-semibold text-brand-slate hover:text-brand-header transition-colors"
                                 >
                                     Back to login
                                 </button>
@@ -350,7 +350,7 @@ export function Login() {
                                     setIsSignUp(!isSignUp);
                                     setError('');
                                 }}
-                                className="text-brand-cream hover:text-white font-semibold transition-colors focus:outline-none"
+                                className="text-brand-cream hover:text-brand-header font-semibold transition-colors focus:outline-none"
                             >
                                 {isSignUp ? 'Sign In' : 'Sign Up'}
                               </button>
@@ -358,7 +358,7 @@ export function Login() {
                         
                         <button
                             onClick={() => navigate('/')}
-                            className="text-sm font-semibold text-brand-slate hover:text-white transition-colors inline-flex items-center gap-2 group"
+                            className="text-sm font-semibold text-brand-slate hover:text-brand-header transition-colors inline-flex items-center gap-2 group"
                         >
                             <Store className="w-4 h-4 text-brand-cream group-hover:scale-110 transition-transform" />
                             Return to Directory

@@ -15,11 +15,11 @@ export function Footer({ business }: FooterProps) {
   };
 
   return (
-    <footer className="bg-[#071739]/95 text-brand-gray border-t border-brand-steel/20 py-8 sm:py-12 px-4 sm:px-6">
+    <footer className="bg-brand-dark/95 text-brand-gray border-t border-brand-steel/20 py-8 sm:py-12 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
           <div>
-            <h3 className="text-lg font-bold text-white mb-4">Contact Us</h3>
+            <h3 className="text-lg font-bold text-brand-header mb-4">Contact Us</h3>
             <a
               href={`https://wa.me/${business.whatsapp_number.replace(/[^0-9]/g, '')}`}
               target="_blank"
@@ -39,7 +39,7 @@ export function Footer({ business }: FooterProps) {
           </div>
 
           <div>
-            <h3 className="text-lg font-bold text-white mb-4">Follow Us</h3>
+            <h3 className="text-lg font-bold text-brand-header mb-4">Follow Us</h3>
             <div className="flex gap-4">
               {business.facebook_url && (
                 <button

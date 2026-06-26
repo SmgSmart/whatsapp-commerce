@@ -49,7 +49,7 @@ export function ProductCard({ product, onAddToCart, onClick }: ProductCardProps)
       </div>
 
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="text-base font-bold text-white mb-1 line-clamp-2 group-hover:text-brand-cream transition-colors">
+        <h3 className="text-base font-bold text-brand-header mb-1 line-clamp-2 group-hover:text-brand-cream transition-colors">
           {product.name}
         </h3>
 
@@ -72,7 +72,7 @@ export function ProductCard({ product, onAddToCart, onClick }: ProductCardProps)
               <div className="flex items-center gap-2">
                 <button
                   onClick={(e) => { e.stopPropagation(); setQuantity(Math.max(1, quantity - 1)); }}
-                  className="px-2 py-1 hover:bg-brand-steel/30 text-white rounded transition-colors"
+                  className="px-2 py-1 hover:bg-brand-steel/30 text-brand-header rounded transition-colors"
                 >
                   −
                 </button>
@@ -81,12 +81,12 @@ export function ProductCard({ product, onAddToCart, onClick }: ProductCardProps)
                   value={quantity}
                   onClick={(e) => e.stopPropagation()}
                   onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-12 text-center px-2 py-1 bg-brand-dark border border-brand-steel/40 text-white rounded outline-none"
+                  className="w-12 text-center px-2 py-1 bg-brand-dark border border-brand-steel/40 text-brand-header rounded outline-none"
                   min="1"
                 />
                 <button
                   onClick={(e) => { e.stopPropagation(); setQuantity(quantity + 1); }}
-                  className="px-2 py-1 hover:bg-brand-steel/30 text-white rounded transition-colors"
+                  className="px-2 py-1 hover:bg-brand-steel/30 text-brand-header rounded transition-colors"
                 >
                   +
                 </button>
@@ -115,7 +115,7 @@ export function ProductCard({ product, onAddToCart, onClick }: ProductCardProps)
           {showQuantitySelector && (
             <button
               onClick={(e) => { e.stopPropagation(); setShowQuantitySelector(false); }}
-              className="w-full mt-2 bg-brand-steel/30 hover:bg-brand-steel/45 text-white font-medium py-2 rounded-lg transition-colors text-sm"
+              className="w-full mt-2 bg-brand-steel/30 hover:bg-brand-steel/45 text-brand-header font-medium py-2 rounded-lg transition-colors text-sm"
             >
               Cancel
             </button>

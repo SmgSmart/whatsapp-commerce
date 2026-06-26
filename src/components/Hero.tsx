@@ -20,7 +20,7 @@ export function Hero({ business }: HeroProps) {
         </div>
       )}
       <div className="px-4 py-6 sm:px-6 sm:py-8 bg-gradient-to-b from-brand-steel/15 to-transparent border-b border-brand-steel/10">
-        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+        <h2 className="text-2xl sm:text-3xl font-bold text-brand-header mb-2">
           {business.business_name}
         </h2>
         {business.tagline && (

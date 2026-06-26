@@ -5,12 +5,13 @@ export default {
     extend: {
       colors: {
         brand: {
-          dark: '#071739',
-          steel: '#4B6382',
-          slate: '#A4B5C4',
-          gray: '#CDD5DB',
-          bronze: '#A68868',
-          cream: '#E3C39D',
+          dark: 'var(--color-brand-dark)',
+          steel: 'var(--color-brand-steel)',
+          slate: 'var(--color-brand-slate)',
+          gray: 'var(--color-brand-gray)',
+          bronze: 'var(--color-brand-bronze)',
+          cream: 'var(--color-brand-cream)',
+          header: 'var(--color-text-header)',
         },
       },
       fontFamily: {

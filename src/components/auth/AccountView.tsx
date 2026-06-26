@@ -16,7 +16,7 @@ export function AccountView() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">Account Settings</h1>
+        <h1 className="text-3xl font-bold text-brand-header">Account Settings</h1>
         <p className="text-brand-slate">Manage your profile and security settings.</p>
       </div>
 
@@ -27,7 +27,7 @@ export function AccountView() {
             <User className="w-5 h-5" />
             Profile
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-2 text-brand-slate hover:bg-brand-steel/20 hover:text-white rounded-lg font-medium transition-colors">
+          <button className="w-full flex items-center gap-3 px-4 py-2 text-brand-slate hover:bg-brand-steel/20 hover:text-brand-header rounded-lg font-medium transition-colors">
             <Shield className="w-5 h-5" />
             Security
           </button>
@@ -35,9 +35,9 @@ export function AccountView() {
 
         {/* Content */}
         <div className="md:col-span-2 space-y-6">
-          <div className="bg-[#071739]/60 backdrop-blur-md rounded-2xl border border-brand-steel/20 shadow-xl overflow-hidden">
+          <div className="bg-brand-dark/60 backdrop-blur-md rounded-2xl border border-brand-steel/20 shadow-xl overflow-hidden">
             <div className="p-6 border-b border-brand-steel/15">
-              <h2 className="text-lg font-semibold text-white">Profile Information</h2>
+              <h2 className="text-lg font-semibold text-brand-header">Profile Information</h2>
             </div>
             <div className="p-6 space-y-6">
               <div className="flex items-center gap-4">
@@ -45,7 +45,7 @@ export function AccountView() {
                   {user.display_name?.charAt(0) || user.email?.charAt(0) || 'U'}
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-lg">
+                  <h3 className="font-bold text-brand-header text-lg">
                     {user.display_name || 'Development Admin'}
                   </h3>
                   <p className="text-brand-slate">Administrator</p>
@@ -55,7 +55,7 @@ export function AccountView() {
               <div className="grid grid-cols-1 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-brand-slate mb-1">Email</label>
-                  <div className="flex items-center gap-2 p-3 bg-brand-dark rounded-xl text-white border border-brand-steel/45">
+                  <div className="flex items-center gap-2 p-3 bg-brand-dark rounded-xl text-brand-header border border-brand-steel/45">
                     <Mail className="w-4 h-4 text-brand-slate/60" />
                     {user.email || 'No email provided'}
                   </div>

@@ -70,12 +70,12 @@ export function OrderModal({ items, business, isOpen, onClose, onSuccess }: Orde
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-brand-dark/70 backdrop-blur-xs">
-      <div className="bg-[#071739]/95 backdrop-blur-md w-full max-w-md rounded-t-2xl sm:rounded-lg p-6 sm:p-8 border border-brand-steel/20 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-brand-dark/95 backdrop-blur-md w-full max-w-md rounded-t-2xl sm:rounded-lg p-6 sm:p-8 border border-brand-steel/20 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-white">Checkout</h2>
+          <h2 className="text-xl font-bold text-brand-header">Checkout</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-brand-steel/20 text-white rounded-lg transition-colors"
+            className="p-2 hover:bg-brand-steel/20 text-brand-header rounded-lg transition-colors"
           >
             <X size={24} />
           </button>
@@ -106,7 +106,7 @@ export function OrderModal({ items, business, isOpen, onClose, onSuccess }: Orde
               value={formData.name}
               onChange={handleInputChange}
               placeholder="Enter your full name"
-              className="w-full px-4 py-2 bg-brand-dark border border-brand-steel/40 text-white placeholder-brand-slate/50 rounded-lg focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none"
+              className="w-full px-4 py-2 bg-brand-dark border border-brand-steel/40 text-brand-header placeholder-brand-slate/50 rounded-lg focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none"
               required
             />
           </div>
@@ -121,7 +121,7 @@ export function OrderModal({ items, business, isOpen, onClose, onSuccess }: Orde
               value={formData.location}
               onChange={handleInputChange}
               placeholder="e.g., Accra, Kumasi, Tema"
-              className="w-full px-4 py-2 bg-brand-dark border border-brand-steel/40 text-white placeholder-brand-slate/50 rounded-lg focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none"
+              className="w-full px-4 py-2 bg-brand-dark border border-brand-steel/40 text-brand-header placeholder-brand-slate/50 rounded-lg focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none"
               required
             />
           </div>
@@ -136,7 +136,7 @@ export function OrderModal({ items, business, isOpen, onClose, onSuccess }: Orde
               onChange={handleInputChange}
               placeholder="Any special requests or preferences..."
               rows={3}
-              className="w-full px-4 py-2 bg-brand-dark border border-brand-steel/40 text-white placeholder-brand-slate/50 rounded-lg focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none resize-none"
+              className="w-full px-4 py-2 bg-brand-dark border border-brand-steel/40 text-brand-header placeholder-brand-slate/50 rounded-lg focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none resize-none"
             />
           </div>
 
@@ -156,7 +156,7 @@ export function OrderModal({ items, business, isOpen, onClose, onSuccess }: Orde
           <button
             type="button"
             onClick={onClose}
-            className="w-full bg-brand-steel/20 hover:bg-brand-steel/35 text-white font-semibold py-2 rounded-lg transition-colors"
+            className="w-full bg-brand-steel/20 hover:bg-brand-steel/35 text-brand-header font-semibold py-2 rounded-lg transition-colors"
           >
             Cancel
           </button>

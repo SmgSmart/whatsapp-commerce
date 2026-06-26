@@ -114,7 +114,7 @@ export function Onboarding() {
             <Rocket className="w-6 h-6 text-brand-cream" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">Let's build your store</h1>
+            <h1 className="text-2xl font-bold text-brand-header">Let's build your store</h1>
             <p className="text-brand-slate mt-1 text-sm">Customize your premium WhatsApp storefront in seconds.</p>
           </div>
         </div>
@@ -123,14 +123,14 @@ export function Onboarding() {
         <div className="flex items-center justify-between mb-8 pb-4 border-b border-brand-steel/10">
           <div className="flex items-center gap-2">
             <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${step === 1 ? 'bg-brand-cream text-brand-dark' : 'bg-brand-cream/20 text-brand-cream'}`}>1</span>
-            <span className={`text-xs font-bold uppercase tracking-wider ${step === 1 ? 'text-white' : 'text-brand-slate'}`}>Basics</span>
+            <span className={`text-xs font-bold uppercase tracking-wider ${step === 1 ? 'text-brand-header' : 'text-brand-slate'}`}>Basics</span>
           </div>
           <div className="flex-1 h-[2px] bg-brand-steel/15 mx-4 relative">
             <div className="absolute top-0 left-0 h-full bg-brand-cream transition-all duration-300" style={{ width: step === 1 ? '0%' : '100%' }}></div>
           </div>
           <div className="flex items-center gap-2">
             <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${step === 2 ? 'bg-brand-cream text-brand-dark' : 'bg-brand-cream/20 text-brand-cream'}`}>2</span>
-            <span className={`text-xs font-bold uppercase tracking-wider ${step === 2 ? 'text-white' : 'text-brand-slate'}`}>Branding & Socials</span>
+            <span className={`text-xs font-bold uppercase tracking-wider ${step === 2 ? 'text-brand-header' : 'text-brand-slate'}`}>Branding & Socials</span>
           </div>
         </div>
 
@@ -157,7 +157,7 @@ export function Onboarding() {
                     required
                     value={formData.businessName}
                     onChange={(e) => handleSlugChange(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 bg-brand-dark/45 border border-brand-steel/20 rounded-2xl focus:ring-2 focus:ring-brand-cream focus:border-transparent text-white outline-none transition-all text-base"
+                    className="w-full pl-12 pr-4 py-3 bg-brand-dark/45 border border-brand-steel/20 rounded-2xl focus:ring-2 focus:ring-brand-cream focus:border-transparent text-brand-header outline-none transition-all text-base"
                     placeholder="e.g. Ama's Boutique"
                   />
                 </div>
@@ -196,7 +196,7 @@ export function Onboarding() {
                     required
                     value={formData.whatsappNumber}
                     onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
-                    className={`w-full pl-12 pr-4 py-3 bg-brand-dark/45 border rounded-2xl focus:ring-2 focus:ring-brand-cream focus:border-transparent text-white outline-none transition-all text-base ${
+                    className={`w-full pl-12 pr-4 py-3 bg-brand-dark/45 border rounded-2xl focus:ring-2 focus:ring-brand-cream focus:border-transparent text-brand-header outline-none transition-all text-base ${
                       formData.whatsappNumber.length > 0 && !isWhatsappValid 
                         ? 'border-rose-500/50' 
                         : 'border-brand-steel/20'
@@ -243,7 +243,7 @@ export function Onboarding() {
                       type="text"
                       value={formData.tagline}
                       onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
-                      className="w-full pl-10 pr-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 rounded-xl text-white outline-none focus:border-brand-cream transition-colors text-sm"
+                      className="w-full pl-10 pr-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 rounded-xl text-brand-header outline-none focus:border-brand-cream transition-colors text-sm"
                       placeholder="e.g. Trendy looks for less"
                     />
                   </div>
@@ -259,7 +259,7 @@ export function Onboarding() {
                       type="text"
                       value={formData.location}
                       onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      className="w-full pl-10 pr-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 rounded-xl text-white outline-none focus:border-brand-cream transition-colors text-sm"
+                      className="w-full pl-10 pr-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 rounded-xl text-brand-header outline-none focus:border-brand-cream transition-colors text-sm"
                       placeholder="e.g. East Legon, Accra"
                     />
                   </div>
@@ -333,7 +333,7 @@ export function Onboarding() {
                     type="url"
                     value={formData.facebookUrl}
                     onChange={(e) => setFormData({ ...formData, facebookUrl: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 rounded-xl text-white outline-none focus:border-brand-cream transition-colors text-sm"
+                    className="w-full pl-10 pr-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 rounded-xl text-brand-header outline-none focus:border-brand-cream transition-colors text-sm"
                     placeholder="https://facebook.com/amasboutique"
                   />
                 </div>
@@ -344,7 +344,7 @@ export function Onboarding() {
                     type="url"
                     value={formData.instagramUrl}
                     onChange={(e) => setFormData({ ...formData, instagramUrl: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 rounded-xl text-white outline-none focus:border-brand-cream transition-colors text-sm"
+                    className="w-full pl-10 pr-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 rounded-xl text-brand-header outline-none focus:border-brand-cream transition-colors text-sm"
                     placeholder="https://instagram.com/amasboutique"
                   />
                 </div>
@@ -356,7 +356,7 @@ export function Onboarding() {
                   type="button"
                   disabled={loading}
                   onClick={() => setStep(1)}
-                  className="flex-1 py-4 bg-brand-steel/15 hover:bg-brand-steel/25 text-white font-bold rounded-2xl transition-all flex items-center justify-center gap-2 cursor-pointer text-sm"
+                  className="flex-1 py-4 bg-brand-steel/15 hover:bg-brand-steel/25 text-brand-header font-bold rounded-2xl transition-all flex items-center justify-center gap-2 cursor-pointer text-sm"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Back

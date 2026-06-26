@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingBag, MapPin, ExternalLink, Search, Zap, Shield, ChevronRight, Star, TrendingUp, Store, Sparkles } from 'lucide-react';
+import { ThemeToggle } from '../components/ThemeToggle';
 import { publicApi } from '../lib/api';
 import type { BusinessInfo } from '../lib/types';
 
@@ -99,18 +100,21 @@ export function StoreDirectory() {
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-bronze to-brand-cream flex items-center justify-center shadow-lg shadow-brand-cream/20">
               <ShoppingBag className="w-5 h-5 text-brand-dark" />
             </div>
-            <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+            <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-brand-header to-brand-header/70 bg-clip-text text-transparent">
               Cartsy
             </span>
           </div>
-          <Link
-            to="/admin/login"
-            className="group flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 hover:border-white/20 text-sm font-semibold transition-all duration-200 backdrop-blur-sm text-white"
-          >
-            <Store className="w-4 h-4 text-brand-cream" />
-            Open Your Store
-            <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-          </Link>
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <Link
+              to="/admin/login"
+              className="group flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-steel/10 hover:bg-brand-steel/20 border border-brand-steel/15 hover:border-brand-steel/25 text-sm font-semibold transition-all duration-200 backdrop-blur-sm text-brand-header"
+            >
+              <Store className="w-4 h-4 text-brand-cream" />
+              Open Your Store
+              <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+          </div>
         </nav>
 
         {/* Hero Content */}
@@ -121,7 +125,7 @@ export function StoreDirectory() {
           </div>
 
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight mb-6">
-            <span className="text-white">Shop local.</span>
+            <span className="text-brand-header">Shop local.</span>
             <br />
             <span className="bg-gradient-to-r from-brand-cream via-brand-bronze to-brand-slate bg-clip-text text-transparent">
               Order on WhatsApp.
@@ -141,7 +145,7 @@ export function StoreDirectory() {
               placeholder="Search stores by name or location…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-14 pr-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-brand-slate/60 focus:outline-none focus:border-brand-cream/60 focus:bg-white/10 focus:ring-2 focus:ring-brand-cream/20 transition-all duration-200 backdrop-blur-sm text-base"
+              className="w-full pl-14 pr-6 py-4 rounded-2xl bg-brand-steel/10 border border-brand-steel/15 text-brand-header placeholder-brand-slate/60 focus:outline-none focus:border-brand-cream/60 focus:bg-brand-steel/20 focus:ring-2 focus:ring-brand-cream/20 transition-all duration-200 backdrop-blur-sm text-base"
             />
           </div>
         </div>
@@ -166,7 +170,7 @@ export function StoreDirectory() {
             <div className="w-24 h-24 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6">
               <Search className="w-10 h-10 text-brand-steel" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">
+            <h3 className="text-xl font-bold text-brand-header mb-2">
               {search ? 'No stores match your search' : 'No stores yet'}
             </h3>
             <p className="text-brand-slate">
@@ -195,7 +199,7 @@ export function StoreDirectory() {
                   <Link
                     key={store.slug}
                     to={`/store/${store.slug}`}
-                    className="group relative rounded-3xl overflow-hidden border border-white/5 bg-white/4 hover:bg-white/8 hover:border-brand-steel/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-dark/50 flex flex-col backdrop-blur-sm"
+                    className="group relative rounded-3xl overflow-hidden border border-brand-steel/15 bg-brand-steel/10 hover:bg-brand-steel/20 hover:border-brand-steel/25 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-dark/50 flex flex-col backdrop-blur-sm"
                   >
                     {/* Banner */}
                     <div className="relative h-44 overflow-hidden">
@@ -244,7 +248,7 @@ export function StoreDirectory() {
                     {/* Store Info */}
                     <div className="p-5 flex-1 flex flex-col bg-brand-dark/40">
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <h2 className="text-base font-bold text-white group-hover:text-brand-cream transition-colors leading-tight">
+                        <h2 className="text-base font-bold text-brand-header group-hover:text-brand-cream transition-colors leading-tight">
                           {store.business_name}
                         </h2>
                         <ExternalLink className="w-4 h-4 text-brand-slate group-hover:text-brand-cream transition-colors shrink-0 mt-0.5" />
@@ -281,7 +285,7 @@ export function StoreDirectory() {
       {/* ─── FEATURES ─────────────────────────────────────────── */}
       <section className="relative max-w-7xl mx-auto px-6 py-20">
         <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
+          <h2 className="text-3xl sm:text-4xl font-black text-brand-header mb-4">
             Why{' '}
             <span className="bg-gradient-to-r from-brand-cream to-brand-bronze bg-clip-text text-transparent">
               sellers & shoppers
@@ -297,12 +301,12 @@ export function StoreDirectory() {
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className={`relative rounded-3xl p-7 bg-white/4 border border-white/5 hover:border-brand-steel/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${f.glow} overflow-hidden group`}
+              className={`relative rounded-3xl p-7 bg-brand-steel/10 border border-brand-steel/15 hover:border-brand-steel/25 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${f.glow} overflow-hidden group`}
             >
               <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${f.gradient} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                 <f.icon className="w-6 h-6 text-brand-dark" />
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">{f.title}</h3>
+              <h3 className="text-lg font-bold text-brand-header mb-2">{f.title}</h3>
               <p className="text-brand-slate text-sm leading-relaxed">{f.desc}</p>
               {/* Subtle gradient glow in corner */}
               <div className={`absolute -bottom-8 -right-8 w-32 h-32 bg-gradient-to-br ${f.gradient} opacity-10 rounded-full blur-2xl group-hover:opacity-20 transition-opacity duration-300`} />
@@ -315,18 +319,18 @@ export function StoreDirectory() {
       <section className="relative max-w-4xl mx-auto px-6 pb-24">
         <div className="relative rounded-3xl overflow-hidden p-10 sm:p-14 text-center">
           {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-brand-steel/30 via-brand-bronze/10 to-brand-cream/5 border border-white/5 rounded-3xl" />
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-steel/30 via-brand-bronze/10 to-brand-cream/5 border border-brand-steel/15 rounded-3xl" />
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-0 left-1/4 w-64 h-64 bg-brand-steel/10 rounded-full blur-3xl" />
             <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-brand-bronze/10 rounded-full blur-3xl" />
           </div>
 
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-white/5 border border-white/10 text-brand-slate text-sm font-medium">
+            <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-brand-steel/10 border border-brand-steel/15 text-brand-slate text-sm font-medium">
               <Sparkles className="w-4 h-4 text-brand-cream" />
               Free to start • No credit card required
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl font-black text-brand-header mb-4">
               Ready to launch your store?
             </h2>
             <p className="text-brand-slate text-lg mb-10 max-w-lg mx-auto">
@@ -351,7 +355,7 @@ export function StoreDirectory() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-bronze to-brand-cream flex items-center justify-center">
               <ShoppingBag className="w-4 h-4 text-brand-dark" />
             </div>
-            <span className="text-white font-bold text-sm">Cartsy</span>
+            <span className="text-brand-header font-bold text-sm">Cartsy</span>
           </div>
           <p className="text-brand-slate text-sm">
             © {new Date().getFullYear()} Cartsy. WhatsApp E-commerce Platform.

@@ -54,12 +54,12 @@ export function Dashboard() {
     return (
         <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto min-h-full">
             <div className="mb-6 sm:mb-8 md:mb-10">
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Dashboard</h1>
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-header tracking-tight">Dashboard</h1>
                 <p className="text-brand-slate mt-1.5 text-base sm:text-lg font-medium">Manage and monitor your store performance</p>
             </div>
 
             {/* Store URL Card */}
-            <div className="mb-6 sm:mb-8 md:mb-10 bg-gradient-to-br from-[#4B6382]/20 via-[#071739]/80 to-[#4B6382]/10 rounded-3xl p-5 sm:p-6 md:p-8 text-white border border-brand-steel/20 shadow-2xl relative overflow-hidden group backdrop-blur-md">
+            <div className="mb-6 sm:mb-8 md:mb-10 bg-brand-steel/10 border border-brand-steel/15 rounded-3xl p-5 sm:p-6 md:p-8 text-brand-header shadow-2xl relative overflow-hidden group backdrop-blur-md">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-brand-cream opacity-5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:opacity-10 transition-opacity duration-500"></div>
                 
                 <div className="relative z-10">
@@ -69,11 +69,11 @@ export function Dashboard() {
                                 <Store className="w-5 h-5 text-brand-cream" />
                                 <span className="text-brand-cream/80 font-bold tracking-wider text-xs uppercase">Your Live Store</span>
                             </div>
-                            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-white truncate">{store?.business_name}</h2>
+                            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-brand-header truncate">{store?.business_name}</h2>
                             
                             <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-brand-dark/45 border border-brand-steel/20 rounded-2xl p-1.5 gap-2 max-w-xl group/link hover:bg-brand-dark/70 hover:border-brand-steel/30 transition-all">
                                 <div className="flex-1 px-3 py-2 sm:py-0 min-w-0 overflow-hidden flex items-center cursor-pointer" onClick={copyToClipboard}>
-                                    <span className="text-xs sm:text-sm font-medium truncate text-brand-slate group-hover/link:text-white transition-colors">{storeUrl}</span>
+                                    <span className="text-xs sm:text-sm font-medium truncate text-brand-slate group-hover/link:text-brand-header transition-colors">{storeUrl}</span>
                                 </div>
                                 <button 
                                     onClick={copyToClipboard}
@@ -116,7 +116,7 @@ export function Dashboard() {
                     </div>
                     <div className="min-w-0">
                         <p className="text-xs sm:text-sm font-bold text-brand-slate uppercase tracking-wider mb-1 truncate">Total Products</p>
-                        <p className="text-2xl sm:text-3xl font-black text-white">{stats.products}</p>
+                        <p className="text-2xl sm:text-3xl font-black text-brand-header">{stats.products}</p>
                     </div>
                 </div>
 
@@ -126,7 +126,7 @@ export function Dashboard() {
                     </div>
                     <div className="min-w-0">
                         <p className="text-xs sm:text-sm font-bold text-brand-slate uppercase tracking-wider mb-1 truncate">Categories</p>
-                        <p className="text-2xl sm:text-3xl font-black text-white">{stats.categories}</p>
+                        <p className="text-2xl sm:text-3xl font-black text-brand-header">{stats.categories}</p>
                     </div>
                 </div>
 

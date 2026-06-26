@@ -37,7 +37,7 @@ export function AuthView() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-brand-bronze to-brand-cream rounded-2xl shadow-lg shadow-brand-cream/15 mb-4">
             <Store className="w-8 h-8 text-brand-dark" />
           </div>
-          <h1 className="text-3xl font-bold text-white">
+          <h1 className="text-3xl font-bold text-brand-header">
             {isSignUp ? 'Create your store' : 'Welcome back'}
           </h1>
           <p className="text-brand-slate mt-2">
@@ -47,7 +47,7 @@ export function AuthView() {
           </p>
         </div>
 
-        <div className="bg-[#071739]/60 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-brand-steel/20">
+        <div className="bg-brand-dark/60 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-brand-steel/20">
           {error && (
             <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl text-sm">
               {error}
@@ -61,7 +61,7 @@ export function AuthView() {
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="flex items-center justify-center gap-3 w-full px-4 py-3 border border-brand-steel/30 bg-brand-dark rounded-xl hover:bg-brand-steel/20 transition-all font-semibold text-white shadow-sm disabled:opacity-50"
+                className="flex items-center justify-center gap-3 w-full px-4 py-3 border border-brand-steel/30 bg-brand-dark rounded-xl hover:bg-brand-steel/20 transition-all font-semibold text-brand-header shadow-sm disabled:opacity-50"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
@@ -90,7 +90,7 @@ export function AuthView() {
                 <div className="w-full border-t border-brand-steel/15"></div>
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-[#071739] px-3 text-brand-slate font-medium tracking-wider">
+                <span className="bg-brand-dark px-3 text-brand-slate font-medium tracking-wider">
                   Or continue with email
                 </span>
               </div>
@@ -108,7 +108,7 @@ export function AuthView() {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-brand-dark border border-brand-steel/40 text-white placeholder-brand-slate/40 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all"
+                    className="w-full pl-10 pr-4 py-3 bg-brand-dark border border-brand-steel/40 text-brand-header placeholder-brand-slate/40 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all"
                     placeholder="John Doe"
                   />
                 </div>
@@ -126,7 +126,7 @@ export function AuthView() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-brand-dark border border-brand-steel/40 text-white placeholder-brand-slate/40 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-brand-dark border border-brand-steel/40 text-brand-header placeholder-brand-slate/40 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all"
                   placeholder="admin@example.com"
                 />
               </div>
@@ -143,7 +143,7 @@ export function AuthView() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-brand-dark border border-brand-steel/40 text-white placeholder-brand-slate/40 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-brand-dark border border-brand-steel/40 text-brand-header placeholder-brand-slate/40 rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all"
                   placeholder="••••••••"
                 />
               </div>

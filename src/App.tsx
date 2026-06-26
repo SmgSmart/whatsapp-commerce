@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { CartProvider } from './contexts/CartContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { StoreProvider } from './contexts/StoreContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { Store } from './pages/Store';
 import { StoreDirectory } from './pages/StoreDirectory';
 import { AdminLayout } from './components/admin/AdminLayout';
@@ -22,7 +23,8 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <StoreProvider>
-          <CartProvider>
+          <ThemeProvider>
+            <CartProvider>
             <Routes>
               {/* Public Store Routes */}
               <Route path="/" element={<StoreDirectory />} />
@@ -51,6 +53,7 @@ function App() {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </CartProvider>
+         </ThemeProvider>
         </StoreProvider>
       </AuthProvider>
     </BrowserRouter>

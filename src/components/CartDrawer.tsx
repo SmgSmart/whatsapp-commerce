@@ -29,15 +29,15 @@ export function CartDrawer({
         className="fixed inset-0 z-40 bg-brand-dark/70 backdrop-blur-xs transition-opacity"
         onClick={onClose}
       />
-      <div className="fixed right-0 top-0 z-50 h-screen w-full max-w-sm bg-[#071739]/95 backdrop-blur-md border-l border-brand-steel/30 shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+      <div className="fixed right-0 top-0 z-50 h-screen w-full max-w-sm bg-brand-dark/95 backdrop-blur-md border-l border-brand-steel/30 shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-brand-steel/20">
           <div className="flex items-center gap-2">
             <ShoppingCart size={24} className="text-brand-cream" />
-            <h2 className="text-xl font-bold text-white">Cart</h2>
+            <h2 className="text-xl font-bold text-brand-header">Cart</h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-brand-steel/20 rounded-lg transition-colors text-white"
+            className="p-2 hover:bg-brand-steel/20 rounded-lg transition-colors text-brand-header"
           >
             <X size={24} />
           </button>
@@ -84,7 +84,7 @@ export function CartDrawer({
               </button>
               <button
                 onClick={onClose}
-                className="w-full bg-brand-steel/20 hover:bg-brand-steel/35 text-white font-semibold py-2 rounded-lg transition-colors"
+                className="w-full bg-brand-steel/20 hover:bg-brand-steel/35 text-brand-header font-semibold py-2 rounded-lg transition-colors"
               >
                 Continue Shopping
               </button>

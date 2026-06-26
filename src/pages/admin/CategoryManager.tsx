@@ -106,7 +106,7 @@ export function CategoryManager() {
         <div className="p-6 md:p-8 max-w-5xl mx-auto">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold text-white">Categories</h1>
+                    <h1 className="text-2xl font-bold text-brand-header">Categories</h1>
                     <p className="text-brand-slate mt-1">Manage your product categories</p>
                 </div>
                 <button
@@ -131,7 +131,7 @@ export function CategoryManager() {
                         {categories.map((category) => (
                             <tr key={category.id} className="hover:bg-brand-steel/10 transition-colors">
                                 <td className="px-6 py-4">
-                                    <span className="font-semibold text-white">{category.name}</span>
+                                    <span className="font-semibold text-brand-header">{category.name}</span>
                                 </td>
                                 <td className="px-6 py-4 text-center">
                                     <button
@@ -185,13 +185,13 @@ export function CategoryManager() {
                     >
                         {/* Header */}
                         <div className="px-6 py-4 border-b border-brand-steel/15 flex justify-between items-center bg-brand-dark/40 flex-shrink-0">
-                            <h2 className="text-xl font-bold text-white font-display">
+                            <h2 className="text-xl font-bold text-brand-header font-display">
                                 {editingCategory ? 'Edit Category' : 'Add New Category'}
                             </h2>
                             <button
                                 type="button"
                                 onClick={() => setIsModalOpen(false)}
-                                className="text-brand-slate hover:text-white transition-colors p-1 hover:scale-105 active:scale-95"
+                                className="text-brand-slate hover:text-brand-header transition-colors p-1 hover:scale-105 active:scale-95"
                             >
                                 <X size={24} />
                             </button>
@@ -207,7 +207,7 @@ export function CategoryManager() {
                                         required
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all hover:border-brand-steel/30"
+                                        className="w-full px-4 py-2.5 bg-brand-dark/45 border border-brand-steel/20 text-brand-header rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-transparent outline-none transition-all hover:border-brand-steel/30"
                                         placeholder="e.g., Electronics, Fashion"
                                         autoFocus
                                     />
@@ -224,7 +224,7 @@ export function CategoryManager() {
                                                     onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
                                                 />
                                                 <div className={`block w-10 h-6 rounded-full transition-colors ${formData.active ? 'bg-brand-cream' : 'bg-brand-steel/30'}`}></div>
-                                                <div className={`absolute left-1 top-1 bg-[#071739] w-4 h-4 rounded-full transition-transform ${formData.active ? 'translate-x-4' : ''}`}></div>
+                                                <div className={`absolute left-1 top-1 bg-brand-dark w-4 h-4 rounded-full transition-transform ${formData.active ? 'translate-x-4' : ''}`}></div>
                                             </div>
                                             <span className="text-sm font-semibold text-brand-slate">Active (Visible in storefront)</span>
                                         </label>
@@ -238,7 +238,7 @@ export function CategoryManager() {
                             <button
                                 type="button"
                                 onClick={() => setIsModalOpen(false)}
-                                className="px-6 py-2.5 border border-brand-steel/20 text-brand-slate rounded-xl hover:bg-brand-steel/10 font-bold transition-colors hover:text-white"
+                                className="px-6 py-2.5 border border-brand-steel/20 text-brand-slate rounded-xl hover:bg-brand-steel/10 font-bold transition-colors hover:text-brand-header"
                             >
                                 Cancel
                             </button>

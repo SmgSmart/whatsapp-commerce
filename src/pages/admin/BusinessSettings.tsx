@@ -94,7 +94,7 @@ export function BusinessSettings() {
     return (
         <div className="p-6 md:p-8 max-w-4xl mx-auto">
             <div className="mb-8">
-                <h1 className="text-2xl font-bold text-white">Store Settings</h1>
+                <h1 className="text-2xl font-bold text-brand-header">Store Settings</h1>
                 <p className="text-brand-slate mt-1">Manage your business information and appearance</p>
             </div>
 
@@ -104,7 +104,7 @@ export function BusinessSettings() {
                     <div className="space-y-8">
                         {/* Basic Info Section */}
                         <div>
-                            <h2 className="text-lg font-bold text-white mb-4 pb-2 border-b border-brand-steel/15">Basic Information</h2>
+                            <h2 className="text-lg font-bold text-brand-header mb-4 pb-2 border-b border-brand-steel/15">Basic Information</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-sm font-semibold text-brand-slate mb-1.5">Business Name *</label>
@@ -114,7 +114,7 @@ export function BusinessSettings() {
                                         required
                                         value={formData.business_name}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
+                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-brand-header rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
                                         placeholder="My Awesome Store"
                                     />
                                 </div>
@@ -127,7 +127,7 @@ export function BusinessSettings() {
                                         required
                                         value={formData.whatsapp_number}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
+                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-brand-header rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
                                         placeholder="+1234567890"
                                     />
                                     <p className="text-xs text-brand-slate/75 mt-1.5">Include country code. Used for receiving orders.</p>
@@ -140,7 +140,7 @@ export function BusinessSettings() {
                                         name="tagline"
                                         value={formData.tagline}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
+                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-brand-header rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
                                         placeholder="The best products in town!"
                                     />
                                 </div>
@@ -149,7 +149,7 @@ export function BusinessSettings() {
 
                         {/* Branding Section */}
                         <div>
-                            <h2 className="text-lg font-bold text-white mb-4 pb-2 border-b border-brand-steel/15">Branding</h2>
+                            <h2 className="text-lg font-bold text-brand-header mb-4 pb-2 border-b border-brand-steel/15">Branding</h2>
                             <div className="space-y-6">
                                 <div>
                                     <label className="block text-sm font-semibold text-brand-slate mb-1.5">Store Logo</label>
@@ -172,7 +172,7 @@ export function BusinessSettings() {
                                     {formData.logo_url && (
                                         <div className="mt-4 w-20 h-20 rounded-xl border border-brand-steel/20 overflow-hidden bg-brand-dark/45 relative flex items-center justify-center">
                                             {uploading.logo && (
-                                                <div className="absolute inset-0 bg-[#071739]/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
+                                                <div className="absolute inset-0 bg-brand-dark/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
                                                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-cream"></div>
                                                 </div>
                                             )}
@@ -203,7 +203,7 @@ export function BusinessSettings() {
                                     {formData.hero_banner_url && (
                                         <div className="mt-4 w-full h-36 rounded-xl border border-brand-steel/20 overflow-hidden bg-brand-dark/45 relative">
                                             {uploading.banner && (
-                                                <div className="absolute inset-0 bg-[#071739]/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
+                                                <div className="absolute inset-0 bg-brand-dark/60 flex items-center justify-center z-10 backdrop-blur-[1px]">
                                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-cream"></div>
                                                 </div>
                                             )}
@@ -216,7 +216,7 @@ export function BusinessSettings() {
 
                         {/* Contact & Social Section */}
                         <div>
-                            <h2 className="text-lg font-bold text-white mb-4 pb-2 border-b border-brand-steel/15">Location & Social Links</h2>
+                            <h2 className="text-lg font-bold text-brand-header mb-4 pb-2 border-b border-brand-steel/15">Location & Social Links</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="md:col-span-2">
                                     <label className="block text-sm font-semibold text-brand-slate mb-1.5">Store Location</label>
@@ -225,7 +225,7 @@ export function BusinessSettings() {
                                         name="location"
                                         value={formData.location}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
+                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-brand-header rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
                                         placeholder="Accra, Ghana"
                                     />
                                 </div>
@@ -237,7 +237,7 @@ export function BusinessSettings() {
                                         name="facebook_url"
                                         value={formData.facebook_url}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
+                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-brand-header rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
                                         placeholder="https://facebook.com/yourstore"
                                     />
                                 </div>
@@ -249,7 +249,7 @@ export function BusinessSettings() {
                                         name="instagram_url"
                                         value={formData.instagram_url}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-white rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
+                                        className="w-full px-4 py-2 bg-brand-dark/45 border border-brand-steel/20 text-brand-header rounded-xl focus:ring-2 focus:ring-brand-cream focus:border-brand-cream outline-none"
                                         placeholder="https://instagram.com/yourstore"
                                     />
                                 </div>

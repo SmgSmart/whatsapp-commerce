@@ -52,7 +52,7 @@ export function ProductGrid({
     <section className="px-4 sm:px-6 py-8" id="products">
       <div className="mb-8 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <h2 className="text-2xl font-bold text-white">Our Products</h2>
+          <h2 className="text-2xl font-bold text-brand-header">Our Products</h2>
           <div className="relative w-full sm:w-72">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-brand-slate" />
@@ -62,7 +62,7 @@ export function ProductGrid({
               placeholder="Search products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="block w-full pl-10 pr-3 py-2 border border-brand-steel/30 rounded-lg leading-5 bg-brand-dark/40 text-white placeholder-brand-slate/60 focus:outline-none focus:placeholder-brand-slate/80 focus:ring-1 focus:ring-brand-cream focus:border-brand-cream sm:text-sm"
+              className="block w-full pl-10 pr-3 py-2 border border-brand-steel/30 rounded-lg leading-5 bg-brand-dark/40 text-brand-header placeholder-brand-slate/60 focus:outline-none focus:placeholder-brand-slate/80 focus:ring-1 focus:ring-brand-cream focus:border-brand-cream sm:text-sm"
             />
           </div>
         </div>
@@ -74,7 +74,7 @@ export function ProductGrid({
               onClick={() => onSelectCategory(null)}
               className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-semibold transition-colors ${selectedCategory === null
                 ? 'bg-brand-cream text-brand-dark shadow-sm shadow-brand-cream/10'
-                : 'bg-brand-steel/20 text-brand-slate hover:bg-brand-steel/30 hover:text-white'
+                : 'bg-brand-steel/20 text-brand-slate hover:bg-brand-steel/30 hover:text-brand-header'
                 }`}
             >
               All Products
@@ -85,7 +85,7 @@ export function ProductGrid({
                 onClick={() => onSelectCategory(category.id)}
                 className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-semibold transition-colors ${selectedCategory === category.id
                   ? 'bg-brand-cream text-brand-dark shadow-sm shadow-brand-cream/10'
-                  : 'bg-brand-steel/20 text-brand-slate hover:bg-brand-steel/30 hover:text-white'
+                  : 'bg-brand-steel/20 text-brand-slate hover:bg-brand-steel/30 hover:text-brand-header'
                   }`}
               >
                 {category.name}
