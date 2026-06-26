@@ -32,18 +32,21 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [stores, setStores] = useState<BusinessInfo[]>([]);
   const [activeStoreId, setActiveStoreId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadedUserId, setLoadedUserId] = useState<string | null>(null);
 
   const fetchStores = useCallback(async () => {
     if (!user) {
       setStores([]);
       setActiveStoreId(null);
       setLoading(false);
+      setLoadedUserId(null);
       return;
     }
     try {
       setLoading(true);
       const fetched = await adminApi.getMyStores();
       setStores(fetched);
+      setLoadedUserId(user.id);
       // Always select the first store for this user.
       // Resetting when user changes is important to prevent
       // one user seeing another user's store.
@@ -82,12 +85,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     : 0;
   const subscriptionStatus = store?.subscription_status ?? null;
 
+  const isContextLoading = loading || (user !== null && loadedUserId !== user?.id);
+
   return (
     <StoreContext.Provider
       value={{
         store,
         stores,
-        loading,
+        loading: isContextLoading,
         activeStoreId,
         setActiveStoreId,
         refetch: fetchStores,
